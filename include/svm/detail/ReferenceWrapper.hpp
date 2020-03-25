@@ -40,9 +40,6 @@ namespace svm::detail {
 		}
 
 	public:
-		bool IsEmpty() const noexcept {
-			return m_Data == nullptr;
-		}
 		const T& GetReference() const noexcept {
 			return *m_Data;
 		}

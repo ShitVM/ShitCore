@@ -10,9 +10,12 @@ namespace svm {
 	enum class TypeCode : std::uint32_t {
 		None,
 
-		Int = 3,
+		Byte,				// Not supported
+		Short,				// Not supported
+		Int,
 		Long,
-		Double = 6,
+		Float,				// Not supported
+		Double,
 		Pointer,
 		GCPointer,
 		Array,
