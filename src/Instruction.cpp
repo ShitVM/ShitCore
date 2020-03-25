@@ -3,6 +3,45 @@
 #include <utility>
 
 namespace svm {
+	OpCode ConvertOpCode(std::uint8_t opCode, ShitBCVersion version) noexcept {
+		if (version == ShitBCVersion::v0_1_0) {
+			if (0x0B <= opCode) {
+				opCode += 6;
+			}
+		}
+
+		if (version <= ShitBCVersion::v0_2_0) {
+			if (0x2B <= opCode) {
+				opCode += 3;
+			} else if (0x29 <= opCode) {
+				opCode += 2;
+			}
+		}
+
+		return static_cast<OpCode>(opCode);
+	}
+	std::uint8_t ConvertOpCode(svm::OpCode opCode, ShitBCVersion version) noexcept {
+		std::uint8_t result = static_cast<std::uint8_t>(opCode);
+
+		if (version <= ShitBCVersion::v0_2_0) {
+			if (OpCode::ToD <= opCode) {
+				result -= 3;
+			} else if (OpCode::ToI <= opCode) {
+				result -= 2;
+			}
+		}
+
+		if (version == ShitBCVersion::v0_1_0) {
+			if (OpCode::Add <= opCode) {
+				result -= 6;
+			}
+		}
+
+		return result;
+	}
+}
+
+namespace svm {
 	Instruction::Instruction(svm::OpCode opCode) noexcept
 		: OpCode(opCode) {}
 	Instruction::Instruction(svm::OpCode opCode, std::uint64_t offset) noexcept

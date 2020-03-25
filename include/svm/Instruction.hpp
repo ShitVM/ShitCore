@@ -1,5 +1,7 @@
 #pragma once
 
+#include <svm/Specification.hpp>
+
 #include <cstddef>
 #include <cstdint>
 #include <vector>
@@ -94,6 +96,9 @@ namespace svm {
 		false/*null*/, true/*new*/, false/*delete*/, false/*gcnull*/, true/*gcnew*/,
 		true/*apush*/, true/*anew*/, true/*agcnew*/, false/*alea*/, false/*count*/,
 	};
+
+	OpCode ConvertOpCode(std::uint8_t opCode, ShitBCVersion version) noexcept;
+	std::uint8_t ConvertOpCode(svm::OpCode opCode, ShitBCVersion version) noexcept;
 }
 
 namespace svm {
