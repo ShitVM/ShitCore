@@ -25,4 +25,4 @@ namespace svm {
 	std::size_t Pade(std::size_t dataSize) noexcept;
 }
 
-#include "detail/ImplMemory.hpp"
+#include "detail/impl/Memory.hpp"
