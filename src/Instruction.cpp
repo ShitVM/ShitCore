@@ -1,5 +1,7 @@
 #include <svm/Instruction.hpp>
 
+#include <svm/IO.hpp>
+
 #include <utility>
 
 namespace svm {
@@ -67,6 +69,14 @@ namespace svm {
 	bool Instruction::HasOperand() const noexcept {
 		return svm::HasOperand[static_cast<std::uint8_t>(OpCode)];
 	}
+
+	std::ostream& operator<<(std::ostream& stream, const Instruction& instruction) {
+		stream << QWord(instruction.Offset) << ": " << Mnemonics[static_cast<std::uint8_t>(instruction.OpCode)];
+		if (instruction.HasOperand()) {
+			stream << " 0x" << Hex(instruction.Operand);
+		}
+		return stream;
+	}
 }
 
 namespace svm {
@@ -108,5 +118,28 @@ namespace svm {
 	std::uint64_t Instructions::AddInstruction(const Instruction& instruction) {
 		m_Instructions.push_back(instruction);
 		return m_Instructions.size() - 1;
+	}
+
+	std::ostream& operator<<(std::ostream& stream, const Instructions& instructions) {
+		const std::string defIndent = detail::MakeIndent(stream);
+		const std::string indentOnce(4, ' ');
+
+		const std::uint32_t labelCount = instructions.GetLabelCount();
+		const std::uint64_t instCount = instructions.GetInstructionCount();
+
+		stream << defIndent << "Instructions: " << instructions.GetInstructionCount() << '\n'
+			   << defIndent << indentOnce << "Labels: " << instructions.GetLabelCount();
+
+		for (std::uint32_t i = 0; i < labelCount; ++i) {
+			const std::uint64_t label = instructions.GetLabel(i);
+			stream << '\n' << defIndent << indentOnce << indentOnce
+				   << '[' << i << "]: " << label << '(' << QWord(instructions.GetInstruction(label).Offset) << ')';
+		}
+
+		for (std::uint64_t i = 0; i < instCount; ++i) {
+			stream << '\n' << defIndent << indentOnce << instructions.GetInstruction(i);
+		}
+
+		return stream;
 	}
 }

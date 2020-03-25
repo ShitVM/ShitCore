@@ -4,6 +4,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <ostream>
 #include <vector>
 
 namespace svm {
@@ -124,6 +125,8 @@ namespace svm {
 	public:
 		bool HasOperand() const noexcept;
 	};
+
+	std::ostream& operator<<(std::ostream& stream, const Instruction& instruction);
 }
 
 namespace svm {
@@ -155,4 +158,6 @@ namespace svm {
 		void SetLabel(std::uint32_t index, std::uint64_t label) noexcept;
 		std::uint64_t AddInstruction(const Instruction& instruction);
 	};
+
+	std::ostream& operator<<(std::ostream& stream, const Instructions& instructions);
 }

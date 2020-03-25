@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <ostream>
 #include <vector>
 
 namespace svm {
@@ -12,6 +13,8 @@ namespace svm {
 		std::size_t Offset = 0;
 		svm::Type Type;
 		std::uint64_t Count = 0;
+
+		bool IsArray() const noexcept;
 	};
 }
 
@@ -32,6 +35,8 @@ namespace svm {
 		bool operator==(const StructureInfo&) = delete;
 		bool operator!=(const StructureInfo&) = delete;
 	};
+
+	std::ostream& operator<<(std::ostream& stream, const StructureInfo& structure);
 }
 
 namespace svm {
@@ -41,4 +46,7 @@ namespace svm {
 	};
 
 	using Structures = std::vector<StructureInfo>;
+
+	std::ostream& operator<<(std::ostream& stream, const Structure& structure);
+	std::ostream& operator<<(std::ostream& stream, const Structures& structures);
 }

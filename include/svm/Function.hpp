@@ -4,6 +4,7 @@
 #include <svm/detail/ReferenceWrapper.hpp>
 
 #include <cstdint>
+#include <ostream>
 #include <vector>
 
 namespace svm {
@@ -29,13 +30,18 @@ namespace svm {
 		bool operator==(const FunctionInfo&) = delete;
 		bool operator!=(const FunctionInfo&) = delete;
 	};
+
+	std::ostream& operator<<(std::ostream& stream, const FunctionInfo& function);
 }
 
 namespace svm {
-	class Function final : public detail::ReferenceWrapper<Function> {
+	class Function final : public detail::ReferenceWrapper<FunctionInfo> {
 	public:
-		using detail::ReferenceWrapper<Function>::ReferenceWrapper;
+		using detail::ReferenceWrapper<FunctionInfo>::ReferenceWrapper;
 	};
 
 	using Functions = std::vector<FunctionInfo>;
+
+	std::ostream& operator<<(std::ostream& stream, const Function& function);
+	std::ostream& operator<<(std::ostream& stream, const Functions& functions);
 }

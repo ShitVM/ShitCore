@@ -1,5 +1,8 @@
 #include <svm/Function.hpp>
 
+#include <svm/IO.hpp>
+
+#include <ios>
 #include <utility>
 
 namespace svm {
@@ -23,5 +26,33 @@ namespace svm {
 		HasResult = functionInfo.HasResult;
 		Instructions = std::move(functionInfo.Instructions);
 		return *this;
+	}
+
+	std::ostream& operator<<(std::ostream& stream, const FunctionInfo& function) {
+		const std::string defIndent = detail::MakeIndent(stream);
+		const std::string indentOnce(4, ' ');
+
+		stream << defIndent << "Function:\n"
+			   << defIndent << indentOnce << "Arity: " << function.Arity
+			   << defIndent << indentOnce << "HasResult: " << std::boolalpha << function.HasResult << std::noboolalpha
+			   << Indent << Indent << function.Instructions << UnIndent << UnIndent;
+		return stream;
+	}
+}
+
+namespace svm {
+	std::ostream& operator<<(std::ostream& stream, const Function& function) {
+		return stream << *function;
+	}
+	std::ostream& operator<<(std::ostream& stream, const Functions& functions) {
+		const std::string defIndent = detail::MakeIndent(stream);
+		const std::string indentOnce(4, ' ');
+
+		stream << defIndent << "Functions: " << functions.size()
+			   << Indent << Indent;
+		for (std::uint32_t i = 0; i < functions.size(); ++i) {
+			stream << '\n' << defIndent << indentOnce << '[' << i << "]:\n" << functions[i];
+		}
+		return stream << UnIndent << UnIndent;
 	}
 }
