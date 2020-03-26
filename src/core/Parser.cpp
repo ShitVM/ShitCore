@@ -54,7 +54,7 @@ namespace svm::core {
 		m_ByteFile.SetPath(detail::GetAbsolutePath(path));
 	}
 	void Parser::Parse() {
-		if (m_File.size()) throw std::runtime_error("Failed to parse the file. Invalid format.");
+		if (!m_File.size()) throw std::runtime_error("Failed to parse the file. Invalid format.");
 
 		static constexpr std::uint8_t magic[] = { 0x74, 0x68, 0x74, 0x68 };
 		const auto [magicBegin, magicEnd] = ReadFile(4);
