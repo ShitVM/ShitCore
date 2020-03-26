@@ -9,7 +9,7 @@
 
 namespace svm::core {
 	template<typename FI>
-	class ModuleInfo {
+	class ModuleInfo final {
 	public:
 		std::variant<std::monostate, ByteFile, VirtualModule<FI>> Module;
 
@@ -42,7 +42,7 @@ namespace svm::core {
 
 namespace svm::core {
 	template<typename FI>
-	class Module : public detail::ReferenceWrapper<ModuleInfo<FI>> {
+	class Module final : public detail::ReferenceWrapper<ModuleInfo<FI>> {
 	public:
 		using detail::ReferenceWrapper<ModuleInfo<FI>>::ReferenceWrapper;
 	};
