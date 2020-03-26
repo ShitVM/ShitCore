@@ -19,7 +19,7 @@ namespace svm {
 }
 
 namespace svm {
-	class StructureInfo final {
+	class StructureInfo {
 	public:
 		std::vector<Field> Fields;
 		TypeInfo Type;
