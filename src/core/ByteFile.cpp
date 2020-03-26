@@ -126,9 +126,9 @@ namespace svm::core {
 		m_Entrypoint = std::move(newEntrypoint);
 	}
 
-	void ByteFile::UpdateStructureCodes(std::uint32_t structureCodeOffset) noexcept {
+	void ByteFile::UpdateStructureCodes(std::uint32_t offset) noexcept {
 		for (std::uint32_t i = 0; i < m_Structures.size(); ++i) {
-			m_Structures[i].Type.Code = static_cast<TypeCode>(static_cast<std::uint32_t>(m_Structures[i].Type.Code) + structureCodeOffset);
+			m_Structures[i].Type.Code = static_cast<TypeCode>(static_cast<std::uint32_t>(m_Structures[i].Type.Code) + offset);
 		}
 	}
 

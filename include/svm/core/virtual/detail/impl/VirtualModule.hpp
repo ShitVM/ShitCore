@@ -42,4 +42,11 @@ namespace svm::core {
 	VirtualFunctions<FI>& VirtualModule<FI>::GetFunctions() noexcept {
 		return m_Functions;
 	}
+
+	template<typename FI>
+	void VirtualModule<FI>::UpdateStructureCodes(std::uint32_t offset) noexcept {
+		for (std::uint32_t i = 0; i < m_Structures.size(); ++i) {
+			m_Structures[i].Type.Code = static_cast<TypeCode>(static_cast<std::uint32_t>(m_Structures[i].Type.Code) + offset);
+		}
+	}
 }

@@ -35,6 +35,8 @@ namespace svm::core {
 		std::uint32_t GetStructureCount() const noexcept;
 		std::variant<Function, VirtualFunction<FI>> GetFunction(std::uint32_t index) const noexcept;
 		std::uint32_t GetFunctionCount() const noexcept;
+
+		void UpdateStructureCodes(std::uint32_t offset) noexcept;
 	};
 }
 

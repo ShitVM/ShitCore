@@ -5,23 +5,22 @@
 #include <svm/detail/FileSystem.hpp>
 
 #include <algorithm>
+#include <variant>
 
 namespace svm::core {
 	template<typename FI>
 	Loader<FI>::Loader(Loader&& loader) noexcept
-		: m_Modules(std::move(loader.m_Modules)), m_StructureOffset(loader.m_StructureOffset) {}
+		: m_Modules(std::move(loader.m_Modules)) {}
 
 	template<typename FI>
 	Loader<FI>& Loader<FI>::operator=(Loader&& loader) noexcept {
 		m_Modules = std::move(loader.m_Modules);
-		m_StructureOffset = loader.m_StructureOffset;
 		return *this;
 	}
 
 	template<typename FI>
 	void Loader<FI>::Clear() noexcept {
 		m_Modules.clear();
-		m_StructureOffset = 0;
 	}
 
 	template<typename FI>
@@ -30,11 +29,7 @@ namespace svm::core {
 		parser.Open(path);
 		parser.Parse();
 
-		ByteFile byteFile = parser.GetResult();
-		byteFile.UpdateStructureCodes(m_StructureOffset);
-		m_StructureOffset += static_cast<std::uint32_t>(byteFile.GetStructures().size());
-
-		return m_Modules.emplace_back(std::move(byteFile));
+		return m_Modules.emplace_back(parser.GetResult());
 	}
 	template<typename FI>
 	VirtualModule<FI>& Loader<FI>::Create(const std::string& virtualPath) {
@@ -70,5 +65,15 @@ namespace svm::core {
 	template<typename FI>
 	std::uint32_t Loader<FI>::GetModuleCount() const noexcept {
 		return static_cast<std::uint32_t>(m_Modules.size());
+	}
+
+	template<typename FI>
+	void Loader<FI>::UpdateStructureCodes() {
+		std::uint32_t offset = 0;
+		for (std::uint32_t i = 0; i < m_Modules.size(); ++i) {
+			ModuleInfo<FI>& module = m_Modules[i];
+			module.UpdateStructureCodes(offset);
+			offset += module.GetStructureCount();
+		}
 	}
 }

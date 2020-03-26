@@ -11,7 +11,6 @@ namespace svm::core {
 	class Loader {
 	private:
 		Modules<FI> m_Modules;
-		std::uint32_t m_StructureOffset = 0;
 
 	public:
 		Loader() noexcept = default;
@@ -33,6 +32,8 @@ namespace svm::core {
 		Module<FI> GetModule(std::uint32_t index) const noexcept;
 		Module<FI> GetModule(const std::string& path) const noexcept;
 		std::uint32_t GetModuleCount() const noexcept;
+
+		void UpdateStructureCodes();
 	};
 }
 

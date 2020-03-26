@@ -89,7 +89,7 @@ namespace svm::core {
 		Instructions& GetEntrypoint() noexcept;
 		void SetEntrypoint(Instructions&& newEntrypoint) noexcept;
 
-		void UpdateStructureCodes(std::uint32_t structureCodeOffset) noexcept;
+		void UpdateStructureCodes(std::uint32_t offset) noexcept;
 	};
 
 	std::ostream& operator<<(std::ostream& stream, const ByteFile& byteFile);

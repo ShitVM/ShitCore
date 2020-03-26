@@ -69,4 +69,12 @@ namespace svm::core {
 		if (IsByteFile()) return static_cast<std::uint32_t>(std::get<ByteFile>(Module).GetFunctions().size());
 		else return static_cast<std::uint32_t>(std::get<VirtualModule<FI>>(Module).GetFunctions().size());
 	}
+
+	template<typename FI>
+	void ModuleInfo<FI>::UpdateStructureCodes(std::uint32_t offset) noexcept {
+		assert(!IsEmpty());
+
+		if (IsByteFile()) return std::get<ByteFile>(Module).UpdateStructureCodes(offset);
+		else return std::get<VirtualModule<FI>>(Module).UpdateStructureCodes(offset);
+	}
 }

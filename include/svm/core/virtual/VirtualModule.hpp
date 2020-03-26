@@ -32,6 +32,8 @@ namespace svm::core {
 		Structures& GetStructures() noexcept;
 		const VirtualFunctions<FI>& GetFunctions() const noexcept;
 		VirtualFunctions<FI>& GetFunctions() noexcept;
+
+		void UpdateStructureCodes(std::uint32_t offset) noexcept;
 	};
 }
 
