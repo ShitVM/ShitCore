@@ -69,9 +69,7 @@ namespace svm::core {
 			m_ShitBCVersion < ShitBCVersion::Least) throw std::runtime_error("Failed to parse the file. Incompatible ShitBC version.");
 
 		ParseConstantPool();
-		if (m_ShitBFVersion >= ShitBFVersion::v0_2_0) {
-			ParseStructures();
-		}
+		ParseStructures();
 		ParseFunctions();
 		m_ByteFile.SetEntrypoint(ParseInstructions());
 	}
