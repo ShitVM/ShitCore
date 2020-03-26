@@ -5,11 +5,14 @@
 
 namespace svm::core {
 	template<typename FI>
+	VirtualModule<FI>::VirtualModule(std::string path) noexcept
+		: m_Path(std::move(path)) {}
+	template<typename FI>
 	VirtualModule<FI>::VirtualModule(std::string path, Structures&& structures, VirtualFunctions<FI>&& functions) noexcept
 		: m_Path(std::move(path)), m_Structures(std::move(structures)), m_Functions(std::move(functions)) {}
 	template<typename FI>
 	VirtualModule<FI>::VirtualModule(VirtualModule&& module) noexcept
-		: m_Path(std::move(module.m_Path)), m_Structures(std::move(module.m_Structures)), m_Functions(std::move(module.m_Path)) {}
+		: m_Path(std::move(module.m_Path)), m_Structures(std::move(module.m_Structures)), m_Functions(std::move(module.m_Functions)) {}
 
 	template<typename FI>
 	VirtualModule<FI>& VirtualModule<FI>::operator=(VirtualModule&& module) noexcept {

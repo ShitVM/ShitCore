@@ -16,6 +16,7 @@ namespace svm::core {
 
 	public:
 		VirtualModule() noexcept = default;
+		VirtualModule(std::string path) noexcept;
 		VirtualModule(std::string path, Structures&& structures, VirtualFunctions<FI>&& functions) noexcept;
 		VirtualModule(VirtualModule&& module) noexcept;
 		~VirtualModule() = default;

@@ -48,3 +48,5 @@ namespace svm::core {
 	template<typename FI>
 	using Modules = std::vector<ModuleInfo<FI>>;
 }
+
+#include "detail/impl/Module.hpp"
