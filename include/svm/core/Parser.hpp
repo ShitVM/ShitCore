@@ -12,7 +12,7 @@
 #include <vector>
 
 namespace svm::core {
-	class Parser final {
+	class Parser {
 	private:
 		std::vector<std::uint8_t> m_File;
 		std::size_t m_Cursor = 0;
