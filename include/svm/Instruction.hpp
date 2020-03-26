@@ -108,19 +108,21 @@ namespace svm {
 		svm::OpCode OpCode = svm::OpCode::Nop;
 		std::uint32_t Operand = 0;
 		std::uint64_t Offset = 0;
+		std::uint8_t OperandIndex = 0;
 
 	public:
 		Instruction() noexcept = default;
 		Instruction(svm::OpCode opCode) noexcept;
 		Instruction(svm::OpCode opCode, std::uint64_t offset) noexcept;
-		Instruction(svm::OpCode opCode, std::uint32_t operand) noexcept;
 		Instruction(svm::OpCode opCode, std::uint32_t operand, std::uint64_t offset) noexcept;
+		Instruction(svm::OpCode opCode, std::uint32_t operand, std::uint8_t operandIndex) noexcept;
+		Instruction(const Instruction& instruction) noexcept;
 		~Instruction() = default;
 
 	public:
 		Instruction& operator=(const Instruction& instruction) noexcept;
-		bool operator==(const Instruction& rhs) const noexcept;
-		bool operator!=(const Instruction& rhs) const noexcept;
+		bool operator==(const Instruction&) = delete;
+		bool operator!=(const Instruction&) = delete;
 
 	public:
 		bool HasOperand() const noexcept;

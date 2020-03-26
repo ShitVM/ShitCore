@@ -18,22 +18,19 @@ namespace svm {
 		: OpCode(opCode) {}
 	Instruction::Instruction(svm::OpCode opCode, std::uint64_t offset) noexcept
 		: OpCode(opCode), Offset(offset) {}
-	Instruction::Instruction(svm::OpCode opCode, std::uint32_t operand) noexcept
-		: OpCode(opCode), Operand(operand) {}
 	Instruction::Instruction(svm::OpCode opCode, std::uint32_t operand, std::uint64_t offset) noexcept
 		: OpCode(opCode), Operand(operand), Offset(offset) {}
+	Instruction::Instruction(svm::OpCode opCode, std::uint32_t operand, std::uint8_t operandIndex) noexcept
+		: OpCode(opCode), Operand(operand), OperandIndex(operandIndex) {}
+	Instruction::Instruction(const Instruction& instruction) noexcept
+		: OpCode(instruction.OpCode), Operand(instruction.Operand), Offset(instruction.Offset), OperandIndex(instruction.OperandIndex) {}
 
 	Instruction& Instruction::operator=(const Instruction& instruction) noexcept {
 		OpCode = instruction.OpCode;
 		Operand = instruction.Operand;
 		Offset = instruction.Offset;
+		OperandIndex = instruction.OperandIndex;
 		return *this;
-	}
-	bool Instruction::operator==(const Instruction& rhs) const noexcept {
-		return OpCode == rhs.OpCode && Operand == rhs.Operand;
-	}
-	bool Instruction::operator!=(const Instruction& rhs) const noexcept {
-		return OpCode != rhs.OpCode || Operand != rhs.Operand;
 	}
 
 	bool Instruction::HasOperand() const noexcept {
