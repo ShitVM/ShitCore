@@ -5,6 +5,7 @@
 
 #include <cstdint>
 #include <limits>
+#include <ostream>
 #include <vector>
 
 namespace svm::core {
@@ -60,6 +61,8 @@ namespace svm::core {
 		const std::vector<DoubleObject>& GetDoublePool() const noexcept;
 		void GetDoublePool(std::vector<DoubleObject> newDoublePool) noexcept;
 	};
+
+	std::ostream& operator<<(std::ostream& stream, const ConstantPool& constantPool);
 }
 
 #include "detail/impl/ConstantPool.hpp"

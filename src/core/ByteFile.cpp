@@ -1,5 +1,7 @@
 #include <svm/core/ByteFile.hpp>
 
+#include <svm/IO.hpp>
+
 #include <utility>
 
 namespace svm::core {
@@ -68,5 +70,19 @@ namespace svm::core {
 	}
 	void ByteFile::SetEntrypoint(Instructions&& newEntrypoint) noexcept {
 		m_Entrypoint = std::move(newEntrypoint);
+	}
+
+	std::ostream& operator<<(std::ostream& stream, const ByteFile& byteFile) {
+		const std::string defIndent = detail::MakeIndent(stream);
+		const std::string indentOnce(4, ' ');
+
+		stream << defIndent << "ByteFile:\n"
+			   << defIndent << indentOnce << "Path: \"" << byteFile.GetPath() << "\"\n"
+			   << Indent << byteFile.GetConstantPool() << '\n'
+						 << byteFile.GetStructures() << '\n'
+						 << byteFile.GetFunctions() << '\n' << UnIndent
+			   << defIndent << indentOnce << "Entrypoint:\n"
+			   << Indent << Indent << byteFile.GetEntrypoint() << UnIndent << UnIndent;
+		return stream;
 	}
 }

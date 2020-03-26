@@ -5,6 +5,7 @@
 #include <svm/Structure.hpp>
 #include <svm/core/ConstantPool.hpp>
 
+#include <ostream>
 #include <string>
 #include <string_view>
 
@@ -47,4 +48,6 @@ namespace svm::core {
 		Instructions& GetEntrypoint() noexcept;
 		void SetEntrypoint(Instructions&& newEntrypoint) noexcept;
 	};
+
+	std::ostream& operator<<(std::ostream& stream, const ByteFile& byteFile);
 }
