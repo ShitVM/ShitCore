@@ -68,15 +68,29 @@ namespace svm::core {
 		if (m_ShitBCVersion > ShitBCVersion::Latest ||
 			m_ShitBCVersion < ShitBCVersion::Least) throw std::runtime_error("Failed to parse the file. Incompatible ShitBC version.");
 
+		ParseDependencies();
 		ParseConstantPool();
 		ParseStructures();
 		ParseFunctions();
+		ParseMappings();
 		m_ByteFile.SetEntrypoint(ParseInstructions());
 	}
 	ByteFile Parser::GetResult() noexcept {
 		return std::move(m_ByteFile);
 	}
 
+	void Parser::ParseDependencies() {
+		const auto depenCount = ReadFile<std::uint32_t>();
+		std::vector<std::string> dependencies(depenCount);
+
+		for (std::uint32_t i = 0; i < depenCount; ++i) {
+			const auto depenLength = ReadFile<std::uint32_t>();
+			const auto [pathBegin, pathEnd] = ReadFile(depenLength);
+			dependencies[i].assign(pathBegin, pathEnd);
+		}
+
+		m_ByteFile.SetDependencies(std::move(dependencies));
+	}
 	void Parser::ParseConstantPool() {
 		const auto intCount = ReadFile<std::uint32_t>();
 		std::vector<IntObject> intPool(intCount);
@@ -133,6 +147,23 @@ namespace svm::core {
 		}
 
 		m_ByteFile.SetFunctions(std::move(functions));
+	}
+	void Parser::ParseMappings() {
+		const auto structMappingCount = ReadFile<std::uint32_t>();
+		std::vector<Mapping> structMappings(structMappingCount);
+		ParseMappings(structMappings);
+
+		const auto funcMappingCount = ReadFile<std::uint32_t>();
+		std::vector<Mapping> funcMappings(funcMappingCount);
+		ParseMappings(funcMappings);
+
+		m_ByteFile.SetMappings({ std::move(structMappings), std::move(funcMappings) });
+	}
+	void Parser::ParseMappings(std::vector<Mapping>& mappings) noexcept {
+		for (Mapping& mapping : mappings) {
+			mapping.Module = ReadFile<std::uint32_t>();
+			mapping.Index = ReadFile<std::uint32_t>();
+		}
 	}
 	Instructions Parser::ParseInstructions() {
 		const auto labelCount = ReadFile<std::uint32_t>();

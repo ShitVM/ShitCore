@@ -43,11 +43,14 @@ namespace svm::core {
 		T ReadFile() noexcept;
 		inline auto ReadFile(std::size_t size) noexcept;
 
+		void ParseDependencies();
 		void ParseConstantPool();
 		template<typename T>
 		void ParseConstants(std::vector<T>& pool) noexcept;
 		void ParseStructures();
 		void ParseFunctions();
+		void ParseMappings();
+		void ParseMappings(std::vector<Mapping>& mappings) noexcept;
 		Instructions ParseInstructions();
 
 		void FindCycle() const;
