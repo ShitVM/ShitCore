@@ -56,8 +56,9 @@ namespace svm::core {
 	}
 	template<typename FI>
 	Module<FI> Loader<FI>::GetModule(const std::string& path) const noexcept {
-		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [path](const auto& module) {
-			return module.GetPath() == path;
+		const std::string absPath = detail::GetAbsolutePath(path);
+		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [absPath](const auto& module) {
+			return module.GetPath() == absPath;
 		});
 		if (iter == m_Modules.end()) return nullptr;
 		else return *iter;
