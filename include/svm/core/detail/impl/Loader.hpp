@@ -66,6 +66,18 @@ namespace svm::core {
 	std::uint32_t Loader<FI>::GetModuleCount() const noexcept {
 		return static_cast<std::uint32_t>(m_Modules.size());
 	}
+	template<typename FI>
+	const Modules<FI>& Loader<FI>::GetModules() const noexcept {
+		return m_Modules;
+	}
+	template<typename FI>
+	Modules<FI>& Loader<FI>::GetModules() noexcept {
+		return m_Modules;
+	}
+	template<typename FI>
+	void Loader<FI>::SetModules(Modules<FI>&& newModules) noexcept {
+		m_Modules = std::move(newModules);
+	}
 
 	template<typename FI>
 	void Loader<FI>::UpdateStructureCodes() {

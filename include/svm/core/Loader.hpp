@@ -32,6 +32,9 @@ namespace svm::core {
 		Module<FI> GetModule(std::uint32_t index) const noexcept;
 		Module<FI> GetModule(const std::string& path) const noexcept;
 		std::uint32_t GetModuleCount() const noexcept;
+		const Modules<FI>& GetModules() const noexcept;
+		Modules<FI>& GetModules() noexcept;
+		void SetModules(Modules<FI>&& newModules) noexcept;
 
 		void UpdateStructureCodes();
 	};
