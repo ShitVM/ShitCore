@@ -35,6 +35,9 @@ namespace svm {
 	public:
 		void Clear() noexcept;
 
+		void AddStructureMapping(std::uint32_t module, std::uint32_t structure);
+		void AddFunctionMapping(std::uint32_t module, std::uint32_t structure);
+
 		const Mapping& GetStructureMapping(std::uint32_t index) const noexcept;
 		std::uint32_t GetStructureMappingCount() const noexcept;
 		const Mapping& GetFunctionMapping(std::uint32_t index) const noexcept;
