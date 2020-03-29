@@ -10,10 +10,11 @@ namespace svm {
 	TypeInfo::TypeInfo(std::string name, TypeCode code, std::size_t size) noexcept
 		: Name(std::move(name)), Code(code), Size(size) {}
 	TypeInfo::TypeInfo(TypeInfo&& typeInfo) noexcept
-		: Name(std::move(typeInfo.Name)), Code(typeInfo.Code), Size(typeInfo.Size) {}
+		: Name(std::move(typeInfo.Name)), Module(typeInfo.Module), Code(typeInfo.Code), Size(typeInfo.Size) {}
 
 	TypeInfo& TypeInfo::operator=(TypeInfo&& typeInfo) noexcept {
 		Name = std::move(typeInfo.Name);
+		Module = typeInfo.Module;
 		Code = typeInfo.Code;
 		Size = typeInfo.Size;
 		return *this;
