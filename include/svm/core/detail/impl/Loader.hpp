@@ -81,11 +81,11 @@ namespace svm::core {
 	}
 
 	template<typename FI>
-	void Loader<FI>::UpdateStructureCodes() {
+	void Loader<FI>::UpdateStructureInfos() {
 		std::uint32_t offset = 0;
 		for (std::uint32_t i = 0; i < m_Modules.size(); ++i) {
 			ModuleInfo<FI>& module = m_Modules[i];
-			module.UpdateStructureCodes(offset);
+			module.UpdateStructureInfos(offset);
 			offset += module.GetStructureCount();
 		}
 	}

@@ -71,10 +71,10 @@ namespace svm::core {
 	}
 
 	template<typename FI>
-	void ModuleInfo<FI>::UpdateStructureCodes(std::uint32_t offset) noexcept {
+	void ModuleInfo<FI>::UpdateStructureInfos(std::uint32_t module) noexcept {
 		assert(!IsEmpty());
 
-		if (IsByteFile()) return std::get<ByteFile>(Module).UpdateStructureCodes(offset);
-		else return std::get<VirtualModule<FI>>(Module).UpdateStructureCodes(offset);
+		if (IsByteFile()) return std::get<ByteFile>(Module).UpdateStructureInfos(module);
+		else return std::get<VirtualModule<FI>>(Module).UpdateStructureInfos(module);
 	}
 }

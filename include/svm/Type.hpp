@@ -25,6 +25,7 @@ namespace svm {
 	class TypeInfo final {
 	public:
 		std::string Name;
+		std::uint32_t Module = 0;
 		TypeCode Code = TypeCode::None;
 		std::size_t Size = 0;
 
