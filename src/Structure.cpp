@@ -37,7 +37,7 @@ namespace svm {
 			if (field.IsArray()) {
 				stream << '[' << field.Count << "](" << field.Type->Size * field.Count + sizeof(ArrayObject);
 			} else {
-				stream << field.Type->Size;
+				stream << '(' << field.Type->Size;
 			}
 			stream << "B)";
 		}
