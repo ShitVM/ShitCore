@@ -2,6 +2,7 @@
 
 #include <svm/IO.hpp>
 
+#include <algorithm>
 #include <cassert>
 #include <utility>
 
