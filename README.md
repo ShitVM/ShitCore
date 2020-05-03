@@ -6,7 +6,7 @@ ShitVM 핵심 라이브러리
 $ git clone https://github.com/ShitVM/ShitCore.git
 $ cd ShitCore
 $ cmake .
-$ make
+$ cmake --build .
 ```
 
 ## 주의사항
