@@ -28,12 +28,12 @@ namespace svm {
 	detail::Hex Hex(std::uint64_t value) noexcept {
 		return { value };
 	}
-	std::ostream& operator<<(std::ostream& stream, const detail::QWord& qword) {
+	std::ostream& operator<<(std::ostream& stream, detail::QWord qword) {
 		return stream << std::hex << std::uppercase << std::setw(16) << std::setfill('0')
 					  << qword.Value
 					  << std::dec << std::nouppercase;
 	}
-	std::ostream& operator<<(std::ostream& stream, const detail::Hex& hex) {
+	std::ostream& operator<<(std::ostream& stream, detail::Hex hex) {
 		return stream << std::hex << std::uppercase << hex.Value << std::dec << std::nouppercase;
 	}
 }

@@ -45,8 +45,8 @@ namespace svm::core {
 
 	template<typename FI>
 	void VirtualModule<FI>::UpdateStructureInfos(std::uint32_t module) noexcept {
-		for (std::uint32_t i = 0; i < m_Structures.size(); ++i) {
-			m_Structures[i].Type.Module = module;
+		for (StructureInfo& structure : m_Structures) {
+			structure.Type.Module = module;
 		}
 	}
 }

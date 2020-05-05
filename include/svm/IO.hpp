@@ -22,6 +22,6 @@ namespace svm {
 	}
 	detail::QWord QWord(std::uint64_t value) noexcept;
 	detail::Hex Hex(std::uint64_t value) noexcept;
-	std::ostream& operator<<(std::ostream& stream, const detail::QWord& qword);
-	std::ostream& operator<<(std::ostream& stream, const detail::Hex& hex);
+	std::ostream& operator<<(std::ostream& stream, detail::QWord qword);
+	std::ostream& operator<<(std::ostream& stream, detail::Hex hex);
 }

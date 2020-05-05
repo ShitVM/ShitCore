@@ -2,7 +2,6 @@
 
 #include <svm/detail/FileSystem.hpp>
 
-#include <algorithm>
 #include <fstream>
 #include <ios>
 #include <sstream>
@@ -81,12 +80,9 @@ namespace svm::core {
 
 	void Parser::ParseDependencies() {
 		const auto depenCount = ReadFile<std::uint32_t>();
-		std::vector<std::string> dependencies(depenCount);
-
+		std::vector<std::string> dependencies;
 		for (std::uint32_t i = 0; i < depenCount; ++i) {
-			const auto depenLength = ReadFile<std::uint32_t>();
-			const auto [pathBegin, pathEnd] = ReadFile(depenLength);
-			dependencies[i].assign(pathBegin, pathEnd);
+			dependencies.push_back(ReadFileString());
 		}
 
 		m_ByteFile.SetDependencies(std::move(dependencies));
@@ -109,7 +105,6 @@ namespace svm::core {
 	void Parser::ParseStructures() {
 		const auto structCount = ReadFile<std::uint32_t>();
 		Structures structures(structCount);
-
 		for (std::uint32_t i = 0; i < structCount; ++i) {
 			structures[i].Type.Name = ReadFileString();
 			structures[i].Name = structures[i].Type.Name;
@@ -140,7 +135,6 @@ namespace svm::core {
 	void Parser::ParseFunctions() {
 		const auto funcCount = ReadFile<std::uint32_t>();
 		Functions functions(funcCount);
-
 		for (std::uint32_t i = 0; i < funcCount; ++i) {
 			functions[i].Name = ReadFileString();
 			functions[i].Arity = ReadFile<std::uint16_t>();
@@ -196,7 +190,6 @@ namespace svm::core {
 
 		const Structures& structures = m_ByteFile.GetStructures();
 		const std::uint32_t structCount = static_cast<std::uint32_t>(structures.size());
-
 		for (std::uint32_t i = 0; i < structCount; ++i) {
 			std::unordered_map<std::uint32_t, int> visited;
 
@@ -235,7 +228,6 @@ namespace svm::core {
 	void Parser::CalcSize() {
 		Structures& structures = m_ByteFile.GetStructures();
 		const std::uint32_t structCount = static_cast<std::uint32_t>(structures.size());
-
 		for (std::uint32_t i = 0; i < structCount; ++i) {
 			structures[i].Type.Size = CalcSize(structures, i);
 		}
@@ -267,7 +259,6 @@ namespace svm::core {
 	void Parser::CalcOffset() {
 		Structures& structures = m_ByteFile.GetStructures();
 		const std::uint32_t structCode = static_cast<std::uint32_t>(structures.size());
-
 		for (std::uint32_t i = 0; i < structCode; ++i) {
 			StructureInfo& structure = structures[i];
 			const std::uint32_t fieldCount = static_cast<std::uint32_t>(structure.Fields.size());

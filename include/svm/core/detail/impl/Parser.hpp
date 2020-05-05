@@ -3,6 +3,9 @@
 
 #include <svm/Memory.hpp>
 
+#include <algorithm>
+#include <utility>
+
 namespace svm::core {
 	template<typename T>
 	T Parser::ReadFile() noexcept {

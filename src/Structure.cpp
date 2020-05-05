@@ -15,7 +15,7 @@ namespace svm {
 	StructureInfo::StructureInfo(std::string name, std::vector<Field> fields, TypeInfo&& type) noexcept
 		: Name(std::move(name)), Fields(std::move(fields)), Type(std::move(type)) {}
 	StructureInfo::StructureInfo(StructureInfo&& structInfo) noexcept
-		: Name(structInfo.Name), Fields(std::move(structInfo.Fields)), Type(std::move(structInfo.Type)) {}
+		: Name(std::move(structInfo.Name)), Fields(std::move(structInfo.Fields)), Type(std::move(structInfo.Type)) {}
 
 	StructureInfo& StructureInfo::operator=(StructureInfo&& structInfo) noexcept {
 		Name = std::move(structInfo.Name);

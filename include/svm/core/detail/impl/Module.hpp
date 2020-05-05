@@ -53,14 +53,8 @@ namespace svm::core {
 	Structure ModuleInfo<FI>::GetStructure(const std::string& name) const noexcept {
 		assert(!IsEmpty());
 
-		const Structures* structures = nullptr;
-
-		if (IsByteFile()) {
-			structures = &std::get<ByteFile>(Module).GetStructures();
-		} else {
-			structures = &std::get<VirtualModule<FI>>(Module).GetStructures();
-		}
-
+		const Structures* structures = IsByteFile() ? &std::get<ByteFile>(Module).GetStructures()
+													: &std::get<VirtualModule<FI>>(Module).GetStructures();
 		const auto iter = std::find_if(structures->begin(), structures->end(), [&name](const auto& structure) {
 			return name == structure.Name;
 		});

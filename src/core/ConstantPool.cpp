@@ -4,6 +4,8 @@
 
 #include <algorithm>
 #include <cassert>
+#include <iterator>
+#include <string>
 #include <utility>
 
 namespace svm::core {
@@ -56,15 +58,15 @@ namespace svm::core {
 
 	std::uint32_t ConstantPool::AddIntConstant(std::uint32_t value) {
 		m_IntPool.push_back(value);
-		return static_cast<std::uint32_t>(m_IntPool.size()) - 1;
+		return GetIntCount() - 1;
 	}
 	std::uint32_t ConstantPool::AddLongConstant(std::uint64_t value) {
 		m_LongPool.push_back(value);
-		return static_cast<std::uint32_t>(m_LongPool.size()) - 1;
+		return GetLongCount() - 1;
 	}
 	std::uint32_t ConstantPool::AddDoubleConstant(double value) {
 		m_DoublePool.push_back(value);
-		return static_cast<std::uint32_t>(m_DoublePool.size()) - 1;
+		return GetDoubleCount() - 1;
 	}
 	std::uint32_t ConstantPool::FindIntConstant(std::uint32_t value) const noexcept {
 		const auto iter = std::find_if(m_IntPool.begin(), m_IntPool.end(), [value](const auto& object) {

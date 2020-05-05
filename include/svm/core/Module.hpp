@@ -4,7 +4,9 @@
 #include <svm/core/virtual/VirtualModule.hpp>
 #include <svm/detail/ReferenceWrapper.hpp>
 
+#include <cstdint>
 #include <string>
+#include <string_view>
 #include <variant>
 #include <vector>
 

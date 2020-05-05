@@ -2,13 +2,15 @@
 
 #include <svm/IO.hpp>
 
+#include <cstddef>
+#include <string>
 #include <utility>
 
 namespace svm {
 	OpCode ConvertOpCode(std::uint8_t opCode, ShitBCVersion) noexcept {
 		return static_cast<OpCode>(opCode);
 	}
-	std::uint8_t ConvertOpCode(svm::OpCode opCode, ShitBCVersion) noexcept {
+	std::uint8_t ConvertOpCode(OpCode opCode, ShitBCVersion) noexcept {
 		return static_cast<std::uint8_t>(opCode);
 	}
 }

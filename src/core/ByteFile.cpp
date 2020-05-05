@@ -5,7 +5,7 @@
 #include <utility>
 
 namespace svm {
-	Mappings::Mappings(std::vector<Mapping>&& structures, std::vector<Mapping>&& functions) noexcept
+	Mappings::Mappings(std::vector<Mapping> structures, std::vector<Mapping> functions) noexcept
 		: m_StructureMappings(std::move(structures)), m_FunctionMappings(std::move(functions)) {}
 	Mappings::Mappings(Mappings&& mappings) noexcept
 		: m_StructureMappings(std::move(mappings.m_StructureMappings)), m_FunctionMappings(std::move(mappings.m_FunctionMappings)) {}
@@ -72,6 +72,7 @@ namespace svm::core {
 		m_Mappings.Clear();
 		m_Entrypoint.Clear();
 	}
+
 	std::string_view ByteFile::GetPath() const noexcept {
 		return m_Path;
 	}
@@ -135,7 +136,7 @@ namespace svm::core {
 
 	void ByteFile::UpdateStructureInfos(std::uint32_t module) noexcept {
 		for (std::uint32_t i = 0; i < m_Structures.size(); ++i) {
-			m_Structures[i].Type.Module = module; 
+			m_Structures[i].Type.Module = module;
 		}
 	}
 

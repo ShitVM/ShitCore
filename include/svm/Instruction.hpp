@@ -2,7 +2,6 @@
 
 #include <svm/Specification.hpp>
 
-#include <cstddef>
 #include <cstdint>
 #include <ostream>
 #include <vector>
@@ -99,7 +98,7 @@ namespace svm {
 	};
 
 	OpCode ConvertOpCode(std::uint8_t opCode, ShitBCVersion version) noexcept;
-	std::uint8_t ConvertOpCode(svm::OpCode opCode, ShitBCVersion version) noexcept;
+	std::uint8_t ConvertOpCode(OpCode opCode, ShitBCVersion version) noexcept;
 }
 
 namespace svm {

@@ -3,6 +3,7 @@
 #include <svm/Structure.hpp>
 #include <svm/core/virtual/VirtualFunction.hpp>
 
+#include <cstdint>
 #include <string>
 #include <string_view>
 

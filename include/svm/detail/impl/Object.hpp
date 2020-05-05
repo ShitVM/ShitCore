@@ -18,7 +18,9 @@ namespace svm {
 	inline PointerObject IntObject::Cast<PointerObject>() const noexcept {
 		return reinterpret_cast<void*>(static_cast<std::uintptr_t>(Value));
 	}
+}
 
+namespace svm {
 	template<>
 	inline IntObject LongObject::Cast<IntObject>() const noexcept {
 		return static_cast<std::uint32_t>(Value);
@@ -35,7 +37,9 @@ namespace svm {
 	inline PointerObject LongObject::Cast<PointerObject>() const noexcept {
 		return reinterpret_cast<void*>(static_cast<std::uintptr_t>(Value));
 	}
+}
 
+namespace svm {
 	template<>
 	inline IntObject DoubleObject::Cast<IntObject>() const noexcept {
 		return static_cast<std::uint32_t>(Value);
@@ -52,7 +56,9 @@ namespace svm {
 	inline PointerObject DoubleObject::Cast<PointerObject>() const noexcept {
 		return reinterpret_cast<void*>(static_cast<std::uintptr_t>(Value));
 	}
+}
 
+namespace svm {
 	template<>
 	inline IntObject PointerObject::Cast<IntObject>() const noexcept {
 		return static_cast<std::uint32_t>(reinterpret_cast<std::uintptr_t>(Value));

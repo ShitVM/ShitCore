@@ -18,11 +18,8 @@ namespace svm {
 
 	public:
 		FunctionInfo() noexcept = default;
-		FunctionInfo(std::string name, std::uint16_t arity) noexcept;
 		FunctionInfo(std::string name, std::uint16_t arity, bool hasResult) noexcept;
 		FunctionInfo(std::string name, std::uint16_t arity, svm::Instructions&& instructions) noexcept;
-		FunctionInfo(std::string name, bool hasResult) noexcept;
-		FunctionInfo(std::string name, bool hasResult, svm::Instructions&& instructions) noexcept;
 		FunctionInfo(std::string name, std::uint16_t arity, bool hasResult, svm::Instructions&& instructions) noexcept;
 		FunctionInfo(FunctionInfo&& functionInfo) noexcept;
 		~FunctionInfo() = default;

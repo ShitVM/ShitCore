@@ -5,6 +5,7 @@
 #include <svm/Structure.hpp>
 #include <svm/core/ConstantPool.hpp>
 
+#include <cstdint>
 #include <ostream>
 #include <string>
 #include <string_view>
@@ -23,7 +24,7 @@ namespace svm {
 
 	public:
 		Mappings() = default;
-		Mappings(std::vector<Mapping>&& structures, std::vector<Mapping>&& functions) noexcept;
+		Mappings(std::vector<Mapping> structures, std::vector<Mapping> functions) noexcept;
 		Mappings(Mappings&& mappings) noexcept;
 		~Mappings() = default;
 

@@ -5,6 +5,7 @@
 #include <svm/detail/FileSystem.hpp>
 
 #include <algorithm>
+#include <utility>
 #include <variant>
 
 namespace svm::core {
@@ -83,8 +84,7 @@ namespace svm::core {
 	template<typename FI>
 	void Loader<FI>::UpdateStructureInfos() {
 		std::uint32_t offset = 0;
-		for (std::uint32_t i = 0; i < m_Modules.size(); ++i) {
-			ModuleInfo<FI>& module = m_Modules[i];
+		for (auto& module : m_Modules) {
 			module.UpdateStructureInfos(offset);
 			offset += module.GetStructureCount();
 		}
