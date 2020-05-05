@@ -1,6 +1,7 @@
 #pragma once
 #include <svm/core/Module.hpp>
 
+#include <algorithm>
 #include <cassert>
 #include <utility>
 
@@ -49,6 +50,24 @@ namespace svm::core {
 		else return std::get<VirtualModule<FI>>(Module).GetStructures()[index];
 	}
 	template<typename FI>
+	Structure ModuleInfo<FI>::GetStructure(const std::string& name) const noexcept {
+		assert(!IsEmpty());
+
+		const Structures* structures = nullptr;
+
+		if (IsByteFile()) {
+			structures = &std::get<ByteFile>(Module).GetStructures();
+		} else {
+			structures = &std::get<VirtualModule<FI>>(Module).GetStructures();
+		}
+
+		const auto iter = std::find_if(structures->begin(), structures->end(), [&name](const auto& structure) {
+			return name == structure.Name;
+		});
+		assert(iter != structures->end());
+		return *iter;
+	}
+	template<typename FI>
 	std::uint32_t ModuleInfo<FI>::GetStructureCount() const noexcept {
 		assert(!IsEmpty());
 
@@ -61,6 +80,24 @@ namespace svm::core {
 
 		if (IsByteFile()) return std::get<ByteFile>(Module).GetFunctions()[index];
 		else return std::get<VirtualModule<FI>>(Module).GetFunctions()[index];
+	}
+	template<typename FI>
+	std::variant<Function, VirtualFunction<FI>> ModuleInfo<FI>::GetFunction(const std::string& name) const noexcept {
+		assert(!IsEmpty());
+
+		const Functions* functions = nullptr;
+
+		if (IsByteFile()) {
+			functions = &std::get<ByteFile>(Module).GetFunctions();
+		} else {
+			functions = &std::get<VirtualModule<FI>>(Module).GetFunctions();
+		}
+
+		const auto iter = std::find_if(functions->begin(), functions->end(), [&name](const auto& function) {
+			return name == function.Name;
+		});
+		assert(iter != functions->end());
+		return *iter;
 	}
 	template<typename FI>
 	std::uint32_t ModuleInfo<FI>::GetFunctionCount() const noexcept {

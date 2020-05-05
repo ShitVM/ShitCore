@@ -4,6 +4,7 @@
 #include <svm/core/virtual/VirtualModule.hpp>
 #include <svm/detail/ReferenceWrapper.hpp>
 
+#include <string>
 #include <variant>
 #include <vector>
 
@@ -32,8 +33,10 @@ namespace svm::core {
 
 		std::string_view GetPath() const noexcept;
 		Structure GetStructure(std::uint32_t index) const noexcept;
+		Structure GetStructure(const std::string& name) const noexcept;
 		std::uint32_t GetStructureCount() const noexcept;
 		std::variant<Function, VirtualFunction<FI>> GetFunction(std::uint32_t index) const noexcept;
+		std::variant<Function, VirtualFunction<FI>> GetFunction(const std::string& name) const noexcept;
 		std::uint32_t GetFunctionCount() const noexcept;
 
 		void UpdateStructureInfos(std::uint32_t module) noexcept;
