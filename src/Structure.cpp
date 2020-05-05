@@ -12,13 +12,13 @@ namespace svm {
 }
 
 namespace svm {
-	StructureInfo::StructureInfo(const std::string_view& name, std::vector<Field> fields, TypeInfo&& type) noexcept
-		: Name(name), Fields(std::move(fields)), Type(std::move(type)) {}
+	StructureInfo::StructureInfo(std::string name, std::vector<Field> fields, TypeInfo&& type) noexcept
+		: Name(std::move(name)), Fields(std::move(fields)), Type(std::move(type)) {}
 	StructureInfo::StructureInfo(StructureInfo&& structInfo) noexcept
 		: Name(structInfo.Name), Fields(std::move(structInfo.Fields)), Type(std::move(structInfo.Type)) {}
 
 	StructureInfo& StructureInfo::operator=(StructureInfo&& structInfo) noexcept {
-		Name = structInfo.Name;
+		Name = std::move(structInfo.Name);
 		Fields = std::move(structInfo.Fields);
 		Type = std::move(structInfo.Type);
 		return *this;

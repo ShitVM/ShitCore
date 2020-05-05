@@ -6,7 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <ostream>
-#include <string_view>
+#include <string>
 #include <vector>
 
 namespace svm {
@@ -28,7 +28,7 @@ namespace svm {
 
 	public:
 		StructureInfo() noexcept = default;
-		StructureInfo(const std::string_view& name, std::vector<Field> fields, TypeInfo&& type) noexcept;
+		StructureInfo(std::string name, std::vector<Field> fields, TypeInfo&& type) noexcept;
 		StructureInfo(StructureInfo&& structInfo) noexcept;
 		~StructureInfo() = default;
 
