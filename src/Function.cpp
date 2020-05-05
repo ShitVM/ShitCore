@@ -34,7 +34,7 @@ namespace svm {
 		const std::string indentOnce(4, ' ');
 
 		stream << defIndent << "Function:\n"
-			   << defIndent << "Name: \"" << function.Name << "\"\n"
+			   << defIndent << indentOnce << "Name: \"" << function.Name << "\"\n"
 			   << defIndent << indentOnce << "Arity: " << function.Arity << '\n'
 			   << defIndent << indentOnce << "HasResult: " << std::boolalpha << function.HasResult << std::noboolalpha << '\n'
 			   << Indent << Indent << function.Instructions << UnIndent << UnIndent;
