@@ -111,7 +111,8 @@ namespace svm::core {
 		Structures structures(structCount);
 
 		for (std::uint32_t i = 0; i < structCount; ++i) {
-			structures[i].Type.Name = "structure" + std::to_string(i);
+			structures[i].Type.Name = ReadFile<std::string>();
+			structures[i].Name = structures[i].Type.Name;
 			structures[i].Type.Code = static_cast<TypeCode>(i + static_cast<std::uint32_t>(TypeCode::Structure));
 
 			const auto fieldCount = ReadFile<std::uint32_t>();
@@ -141,6 +142,7 @@ namespace svm::core {
 		Functions functions(funcCount);
 
 		for (std::uint32_t i = 0; i < funcCount; ++i) {
+			functions[i].Name = ReadFile<std::string>();
 			functions[i].Arity = ReadFile<std::uint16_t>();
 			functions[i].HasResult = ReadFile<bool>();
 			functions[i].Instructions = ParseInstructions();
@@ -162,7 +164,7 @@ namespace svm::core {
 	void Parser::ParseMappings(std::vector<Mapping>& mappings) noexcept {
 		for (Mapping& mapping : mappings) {
 			mapping.Module = ReadFile<std::uint32_t>();
-			mapping.Index = ReadFile<std::uint32_t>();
+			mapping.Name = ReadFile<std::string>();
 		}
 	}
 	Instructions Parser::ParseInstructions() {
@@ -221,7 +223,7 @@ namespace svm::core {
 			const Type type = structures[node].Fields[i].Type;
 			if (!type.IsStructure()) continue;
 			else if (const auto index = static_cast<std::uint32_t>(type->Code) - static_cast<std::uint32_t>(TypeCode::Structure);
-				FindCycle(structures, visited, cycle, index)) {
+					 FindCycle(structures, visited, cycle, index)) {
 				cycle.push_back(structures[index]);
 				return true;
 			}

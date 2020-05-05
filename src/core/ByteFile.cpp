@@ -21,11 +21,11 @@ namespace svm {
 		m_FunctionMappings.clear();
 	}
 
-	void Mappings::AddStructureMapping(std::uint32_t module, std::uint32_t structure) {
-		m_StructureMappings.push_back({ module, structure });
+	void Mappings::AddStructureMapping(std::uint32_t module, std::string name) {
+		m_StructureMappings.push_back({ module, std::move(name) });
 	}
-	void Mappings::AddFunctionMapping(std::uint32_t module, std::uint32_t structure) {
-		m_FunctionMappings.push_back({ module, structure });
+	void Mappings::AddFunctionMapping(std::uint32_t module, std::string name) {
+		m_FunctionMappings.push_back({ module, std::move(name) });
 	}
 
 	const Mapping& Mappings::GetStructureMapping(std::uint32_t index) const noexcept {

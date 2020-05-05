@@ -13,7 +13,7 @@
 namespace svm {
 	struct Mapping final {
 		std::uint32_t Module;
-		std::uint32_t Index;
+		std::string Name;
 	};
 
 	class Mappings final {
@@ -35,8 +35,8 @@ namespace svm {
 	public:
 		void Clear() noexcept;
 
-		void AddStructureMapping(std::uint32_t module, std::uint32_t structure);
-		void AddFunctionMapping(std::uint32_t module, std::uint32_t structure);
+		void AddStructureMapping(std::uint32_t module, std::string name);
+		void AddFunctionMapping(std::uint32_t module, std::string name);
 
 		const Mapping& GetStructureMapping(std::uint32_t index) const noexcept;
 		std::uint32_t GetStructureMappingCount() const noexcept;
