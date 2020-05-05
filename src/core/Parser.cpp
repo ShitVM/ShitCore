@@ -111,7 +111,7 @@ namespace svm::core {
 		Structures structures(structCount);
 
 		for (std::uint32_t i = 0; i < structCount; ++i) {
-			structures[i].Type.Name = ReadFile<std::string>();
+			structures[i].Type.Name = ReadFileString();
 			structures[i].Name = structures[i].Type.Name;
 			structures[i].Type.Code = static_cast<TypeCode>(i + static_cast<std::uint32_t>(TypeCode::Structure));
 
@@ -142,7 +142,7 @@ namespace svm::core {
 		Functions functions(funcCount);
 
 		for (std::uint32_t i = 0; i < funcCount; ++i) {
-			functions[i].Name = ReadFile<std::string>();
+			functions[i].Name = ReadFileString();
 			functions[i].Arity = ReadFile<std::uint16_t>();
 			functions[i].HasResult = ReadFile<bool>();
 			functions[i].Instructions = ParseInstructions();
@@ -164,7 +164,7 @@ namespace svm::core {
 	void Parser::ParseMappings(std::vector<Mapping>& mappings) noexcept {
 		for (Mapping& mapping : mappings) {
 			mapping.Module = ReadFile<std::uint32_t>();
-			mapping.Name = ReadFile<std::string>();
+			mapping.Name = ReadFileString();
 		}
 	}
 	Instructions Parser::ParseInstructions() {

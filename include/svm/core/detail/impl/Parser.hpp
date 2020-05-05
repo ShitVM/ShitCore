@@ -12,8 +12,7 @@ namespace svm::core {
 		if (sizeof(result) > 1 && GetEndian() != Endian::Little) return ReverseEndian(result);
 		else return result;
 	}
-	template<>
-	inline std::string Parser::ReadFile<std::string>() {
+	inline std::string Parser::ReadFileString() {
 		const std::uint32_t length = ReadFile<std::uint32_t>();
 		std::string result(length, 0);
 		std::copy(m_File.begin() + m_Cursor, m_File.begin() + m_Cursor + length, result.data());

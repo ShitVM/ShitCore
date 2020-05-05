@@ -41,8 +41,7 @@ namespace svm::core {
 	private:
 		template<typename T>
 		T ReadFile() noexcept;
-		template<>
-		inline std::string ReadFile<std::string>();
+		inline std::string ReadFileString();
 		inline auto ReadFile(std::size_t size) noexcept;
 
 		void ParseDependencies();
