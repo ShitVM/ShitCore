@@ -85,19 +85,21 @@ namespace svm::core {
 	std::variant<Function, VirtualFunction<FI>> ModuleInfo<FI>::GetFunction(const std::string& name) const noexcept {
 		assert(!IsEmpty());
 
-		const Functions* functions = nullptr;
-
 		if (IsByteFile()) {
-			functions = &std::get<ByteFile>(Module).GetFunctions();
+			const Functions& functions = std::get<ByteFile>(Module).GetFunctions();
+			const auto iter = std::find_if(functions.begin(), functions.end(), [&name](const auto& function) {
+				return name == function.Name;
+			});
+			assert(iter != functions.end());
+			return *iter;
 		} else {
-			functions = &std::get<VirtualModule<FI>>(Module).GetFunctions();
+			const VirtualFunctions<FI>& functions = std::get<VirtualModule<FI>>(Module).GetFunctions();
+			const auto iter = std::find_if(functions.begin(), functions.end(), [&name](const auto& function) {
+				return name == function.Name;
+			});
+			assert(iter != functions.end());
+			return *iter;
 		}
-
-		const auto iter = std::find_if(functions->begin(), functions->end(), [&name](const auto& function) {
-			return name == function.Name;
-		});
-		assert(iter != functions->end());
-		return *iter;
 	}
 	template<typename FI>
 	std::uint32_t ModuleInfo<FI>::GetFunctionCount() const noexcept {
