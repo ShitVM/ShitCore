@@ -6,22 +6,23 @@
 #include <utility>
 
 namespace svm {
-	FunctionInfo::FunctionInfo(std::uint16_t arity) noexcept
-		: Arity(arity) {}
-	FunctionInfo::FunctionInfo(std::uint16_t arity, bool hasResult) noexcept
-		: Arity(arity), HasResult(hasResult) {}
-	FunctionInfo::FunctionInfo(std::uint16_t arity, svm::Instructions&& instructions) noexcept
-		: Arity(arity), Instructions(std::move(instructions)) {}
-	FunctionInfo::FunctionInfo(bool hasResult) noexcept
-		: HasResult(hasResult) {}
-	FunctionInfo::FunctionInfo(bool hasResult, svm::Instructions&& instructions) noexcept
-		: HasResult(hasResult), Instructions(std::move(instructions)) {}
-	FunctionInfo::FunctionInfo(std::uint16_t arity, bool hasResult, svm::Instructions&& instructions) noexcept
-		: Arity(arity), HasResult(hasResult), Instructions(std::move(instructions)) {}
+	FunctionInfo::FunctionInfo(std::string name, std::uint16_t arity) noexcept
+		: Name(std::move(name)), Arity(arity) {}
+	FunctionInfo::FunctionInfo(std::string name, std::uint16_t arity, bool hasResult) noexcept
+		: Name(std::move(name)), Arity(arity), HasResult(hasResult) {}
+	FunctionInfo::FunctionInfo(std::string name, std::uint16_t arity, svm::Instructions&& instructions) noexcept
+		: Name(std::move(name)), Arity(arity), Instructions(std::move(instructions)) {}
+	FunctionInfo::FunctionInfo(std::string name, bool hasResult) noexcept
+		: Name(std::move(name)), HasResult(hasResult) {}
+	FunctionInfo::FunctionInfo(std::string name, bool hasResult, svm::Instructions&& instructions) noexcept
+		: Name(std::move(name)), HasResult(hasResult), Instructions(std::move(instructions)) {}
+	FunctionInfo::FunctionInfo(std::string name, std::uint16_t arity, bool hasResult, svm::Instructions&& instructions) noexcept
+		: Name(std::move(name)), Arity(arity), HasResult(hasResult), Instructions(std::move(instructions)) {}
 	FunctionInfo::FunctionInfo(FunctionInfo&& functionInfo) noexcept
-		: Arity(functionInfo.Arity), HasResult(functionInfo.HasResult), Instructions(std::move(functionInfo.Instructions)) {}
+		: Name(std::move(functionInfo.Name)), Arity(functionInfo.Arity), HasResult(functionInfo.HasResult), Instructions(std::move(functionInfo.Instructions)) {}
 
 	FunctionInfo& FunctionInfo::operator=(FunctionInfo&& functionInfo) noexcept {
+		Name = std::move(functionInfo.Name);
 		Arity = functionInfo.Arity;
 		HasResult = functionInfo.HasResult;
 		Instructions = std::move(functionInfo.Instructions);
@@ -33,6 +34,7 @@ namespace svm {
 		const std::string indentOnce(4, ' ');
 
 		stream << defIndent << "Function:\n"
+			   << defIndent << "Name: \"" << function.Name << "\"\n"
 			   << defIndent << indentOnce << "Arity: " << function.Arity << '\n'
 			   << defIndent << indentOnce << "HasResult: " << std::boolalpha << function.HasResult << std::noboolalpha << '\n'
 			   << Indent << Indent << function.Instructions << UnIndent << UnIndent;

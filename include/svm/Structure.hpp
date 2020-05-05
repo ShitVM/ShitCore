@@ -6,6 +6,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <ostream>
+#include <string>
 #include <vector>
 
 namespace svm {
@@ -21,12 +22,13 @@ namespace svm {
 namespace svm {
 	class StructureInfo {
 	public:
+		std::string Name;
 		std::vector<Field> Fields;
 		TypeInfo Type;
 
 	public:
 		StructureInfo() noexcept = default;
-		StructureInfo(std::vector<Field> fields, TypeInfo&& type) noexcept;
+		StructureInfo(std::string name, std::vector<Field> fields, TypeInfo&& type) noexcept;
 		StructureInfo(StructureInfo&& structInfo) noexcept;
 		~StructureInfo() = default;
 
