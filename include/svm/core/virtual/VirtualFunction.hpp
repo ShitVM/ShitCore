@@ -3,20 +3,23 @@
 #include <svm/detail/ReferenceWrapper.hpp>
 
 #include <cstdint>
+#include <string>
+#include <string_view>
 #include <type_traits>
 #include <vector>
 
 namespace svm::core {
 	class VirtualFunctionInfo {
 	private:
+		std::string m_Name;
 		std::uint16_t m_Arity = 0;
 		bool m_HasResult = false;
 
 	public:
 		VirtualFunctionInfo() noexcept = default;
-		VirtualFunctionInfo(std::uint16_t arity) noexcept;
-		VirtualFunctionInfo(bool hasResult) noexcept;
-		VirtualFunctionInfo(std::uint16_t arity, bool hasResult) noexcept;
+		VirtualFunctionInfo(std::string name, std::uint16_t arity) noexcept;
+		VirtualFunctionInfo(std::string name, bool hasResult) noexcept;
+		VirtualFunctionInfo(std::string name, std::uint16_t arity, bool hasResult) noexcept;
 		VirtualFunctionInfo(VirtualFunctionInfo&& functionInfo) noexcept;
 		~VirtualFunctionInfo() = default;
 
@@ -26,6 +29,7 @@ namespace svm::core {
 		bool operator!=(const VirtualFunctionInfo&) = delete;
 
 	public:
+		std::string_view GetName() const noexcept;
 		std::uint16_t GetArity() const noexcept;
 		bool HasResult() const noexcept;
 	};
