@@ -95,7 +95,7 @@ namespace svm::core {
 		} else {
 			const VirtualFunctions<FI>& functions = std::get<VirtualModule<FI>>(Module).GetFunctions();
 			const auto iter = std::find_if(functions.begin(), functions.end(), [&name](const auto& function) {
-				return name == function.Name;
+				return name == function.GetName();
 			});
 			assert(iter != functions.end());
 			return *iter;
