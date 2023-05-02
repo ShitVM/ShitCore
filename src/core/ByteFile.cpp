@@ -22,6 +22,16 @@ namespace svm::core {
 		return *this;
 	}
 
+	void ByteFile::Clear() noexcept {
+		SetPath({});
+		GetDependencies().clear();
+		m_ConstantPool.Clear();
+		GetStructures().clear();
+		GetFunctions().clear();
+		GetMappings().Clear();
+		GetEntrypoint().Clear();
+	}
+
 	const ConstantPool& ByteFile::GetConstantPool() const noexcept {
 		return m_ConstantPool;
 	}

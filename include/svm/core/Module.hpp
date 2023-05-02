@@ -1,5 +1,6 @@
 #pragma once
 
+#include <svm/Structure.hpp>
 #include <svm/core/ByteFile.hpp>
 #include <svm/core/virtual/VirtualModule.hpp>
 #include <svm/detail/ReferenceWrapper.hpp>
@@ -40,6 +41,7 @@ namespace svm::core {
 		std::variant<Function, VirtualFunction<FI>> GetFunction(std::uint32_t index) const noexcept;
 		std::variant<Function, VirtualFunction<FI>> GetFunction(const std::string& name) const noexcept;
 		std::uint32_t GetFunctionCount() const noexcept;
+		const Mappings& GetMappings() const noexcept;
 
 		void UpdateStructureInfos(std::uint32_t module) noexcept;
 	};
@@ -54,6 +56,11 @@ namespace svm::core {
 
 	template<typename FI>
 	using Modules = std::vector<ModuleInfo<FI>>;
+}
+
+namespace svm::core {
+	template<typename FI>
+	Cycle FindCycle(const Modules<FI>& modules);
 }
 
 #include "detail/impl/Module.hpp"

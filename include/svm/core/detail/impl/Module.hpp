@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <unordered_map>
 #include <utility>
 
 namespace svm::core {
@@ -102,6 +103,13 @@ namespace svm::core {
 		if (IsByteFile()) return static_cast<std::uint32_t>(std::get<ByteFile>(Module).GetFunctions().size());
 		else return static_cast<std::uint32_t>(std::get<VirtualModule<FI>>(Module).GetFunctions().size());
 	}
+	template<typename FI>
+	const Mappings& ModuleInfo<FI>::GetMappings() const noexcept {
+		assert(!IsEmpty());
+
+		if (IsByteFile()) return std::get<ByteFile>(Module).GetMappings();
+		else return std::get<VirtualModule<FI>>(Module).GetMappings();
+	}
 
 	template<typename FI>
 	void ModuleInfo<FI>::UpdateStructureInfos(std::uint32_t module) noexcept {
@@ -109,5 +117,47 @@ namespace svm::core {
 
 		if (IsByteFile()) return std::get<ByteFile>(Module).UpdateStructureInfos(module);
 		else return std::get<VirtualModule<FI>>(Module).UpdateStructureInfos(module);
+	}
+}
+
+namespace svm::core {
+	namespace detail {
+		template<typename FI>
+		bool FindCycle(const Modules<FI>& modules, const ModuleInfo<FI>& module, Cycle& cycle, std::unordered_map<std::uint32_t, int>& visited, std::uint32_t node) {
+			int& status = visited[node];
+			if (status) return status == 1;
+
+			const Structure structure = module.GetStructure(node);
+			const std::uint32_t fieldCount = static_cast<std::uint32_t>(structure->Fields.size());
+
+			status = 1;
+			for (std::uint32_t i = 0; i < fieldCount; ++i) {
+				const Type type = structure->Fields[i].Type;
+				if (!type.IsStructure()) continue;
+				else if (const auto index = static_cast<std::uint32_t>(type->Code) - static_cast<std::uint32_t>(TypeCode::Structure);
+						FindCycle(modules, module, cycle, visited, index)) {
+					cycle.push_back(module.GetStructure(index));
+					return true;
+				}
+			}
+
+			status = 2;
+			return false;
+		}
+	}
+
+	template<typename FI>
+	Cycle FindCycle(const Modules<FI>& modules) {
+		Cycle cycle;
+
+		for (const ModuleInfo<FI>& module : modules) {
+			const std::uint32_t structCount = module.GetStructureCount() + module.GetMappings().GetStructureMappingCount();
+			for (std::uint32_t i = 0; i < structCount; ++i) {
+				std::unordered_map<std::uint32_t, int> visited;
+				if (detail::FindCycle(modules, module, cycle, visited, i)) return cycle;
+			}
+		}
+
+		return cycle;
 	}
 }

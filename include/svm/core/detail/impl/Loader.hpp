@@ -34,7 +34,7 @@ namespace svm::core {
 	}
 	template<typename FI>
 	VirtualModule<FI>& Loader<FI>::Create(const std::string& virtualPath) {
-		ModuleInfo<FI>& module = m_Modules.emplace_back(VirtualModule<FI>(detail::GetAbsolutePath(virtualPath)));
+		ModuleInfo<FI>& module = m_Modules.emplace_back(VirtualModule<FI>(svm::detail::GetAbsolutePath(virtualPath)));
 		return std::get<VirtualModule<FI>>(module.Module);
 	}
 	template<typename FI>
@@ -57,7 +57,7 @@ namespace svm::core {
 	}
 	template<typename FI>
 	Module<FI> Loader<FI>::GetModule(const std::string& path) const noexcept {
-		const std::string absPath = detail::GetAbsolutePath(path);
+		const std::string absPath = svm::detail::GetAbsolutePath(path);
 		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [absPath](const auto& module) {
 			return module.GetPath() == absPath;
 		});

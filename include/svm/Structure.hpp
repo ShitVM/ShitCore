@@ -48,6 +48,7 @@ namespace svm {
 	};
 
 	using Structures = std::vector<StructureInfo>;
+	using Cycle = std::vector<Structure>;
 
 	std::ostream& operator<<(std::ostream& stream, const Structure& structure);
 	std::ostream& operator<<(std::ostream& stream, const Structures& structures);
