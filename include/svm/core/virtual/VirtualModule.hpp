@@ -6,5 +6,5 @@
 
 namespace svm::core {
 	template<typename FI>
-	using VirtualModule = ModuleBase<VirtualFunction<FI>>;
+	using VirtualModule = ModuleBase<VirtualFunctions<FI>>;
 }
