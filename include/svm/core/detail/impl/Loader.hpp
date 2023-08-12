@@ -5,6 +5,7 @@
 #include <svm/detail/FileSystem.hpp>
 
 #include <algorithm>
+#include <memory>
 #include <utility>
 #include <variant>
 
@@ -30,11 +31,12 @@ namespace svm::core {
 		parser.Open(path);
 		parser.Parse();
 
-		return m_Modules.emplace_back(parser.GetResult());
+		return *m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(parser.GetResult()));
 	}
 	template<typename FI>
 	VirtualModule<FI>& Loader<FI>::Create(const std::string& virtualPath) {
-		ModuleInfo<FI>& module = m_Modules.emplace_back(VirtualModule<FI>(svm::detail::GetAbsolutePath(virtualPath)));
+		ModuleInfo<FI>& module = *m_Modules.emplace_back(
+			std::make_unique<ModuleInfo<FI>>(VirtualModule<FI>(svm::detail::GetAbsolutePath(virtualPath))));
 		return std::get<VirtualModule<FI>>(module.Module);
 	}
 	template<typename FI>
@@ -55,16 +57,16 @@ namespace svm::core {
 
 	template<typename FI>
 	Module<FI> Loader<FI>::GetModule(std::uint32_t index) const noexcept {
-		return m_Modules[index];
+		return *m_Modules[index];
 	}
 	template<typename FI>
 	Module<FI> Loader<FI>::GetModule(const std::string& path) const noexcept {
 		const std::string absPath = svm::detail::GetAbsolutePath(path);
 		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [absPath](const auto& module) {
-			return module.GetPath() == absPath;
+			return module->GetPath() == absPath;
 		});
 		if (iter == m_Modules.end()) return nullptr;
-		else return *iter;
+		else return **iter;
 	}
 	template<typename FI>
 	std::uint32_t Loader<FI>::GetModuleCount() const noexcept {
@@ -85,10 +87,8 @@ namespace svm::core {
 
 	template<typename FI>
 	void Loader<FI>::UpdateStructureInfos() {
-		std::uint32_t offset = 0;
-		for (auto& module : m_Modules) {
-			module.UpdateStructureInfos(offset);
-			offset += module.GetStructureCount();
+		for (std::size_t i = 0; i < m_Modules.size(); ++i) {
+			m_Modules[i]->UpdateStructureInfos(static_cast<std::uint32_t>(i));
 		}
 	}
 }

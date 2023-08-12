@@ -6,6 +6,7 @@
 #include <svm/detail/ReferenceWrapper.hpp>
 
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <variant>
@@ -55,7 +56,7 @@ namespace svm::core {
 	};
 
 	template<typename FI>
-	using Modules = std::vector<ModuleInfo<FI>>;
+	using Modules = std::vector<std::unique_ptr<ModuleInfo<FI>>>;
 }
 
 namespace svm::core {
