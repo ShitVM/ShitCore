@@ -47,7 +47,9 @@ namespace svm::core {
 		for (const std::string& dependency : dependencies) {
 			if (GetModule(dependency) != nullptr) continue;
 
-			LoadDependencies(Load(dependency));
+			const svm::detail::fs::path& path = svm::detail::fs::u8path(byteFile.GetPath()).parent_path() / dependency;
+
+			LoadDependencies(Load(path.generic_string()));
 		}
 	}
 
