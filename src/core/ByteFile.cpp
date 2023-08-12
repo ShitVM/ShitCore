@@ -52,7 +52,7 @@ namespace svm::core {
 	}
 
 	void ByteFile::UpdateFunctionInfos(std::uint32_t module) noexcept {
-		for (FunctionInfo& function : m_Functions) {
+		for (FunctionInfo& function : GetFunctions()) {
 			function.Module = module;
 		}
 	}
