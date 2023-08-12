@@ -12,6 +12,7 @@ namespace svm {
 	class FunctionInfo final {
 	public:
 		std::string Name;
+		std::uint32_t Module = 0;
 		std::uint16_t Arity = 0;
 		bool HasResult = false;
 		svm::Instructions Instructions;

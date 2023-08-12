@@ -31,13 +31,21 @@ namespace svm::core {
 		parser.Open(path);
 		parser.Parse();
 
-		return *m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(parser.GetResult()));
+		const auto index = static_cast<std::uint32_t>(m_Modules.size());
+		auto byteFile = parser.GetResult();
+		byteFile.UpdateStructureInfos(index);
+		byteFile.UpdateFunctionInfos(index);
+
+		return *m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(std::move(byteFile)));
 	}
 	template<typename FI>
 	VirtualModule<FI>& Loader<FI>::Create(const std::string& virtualPath) {
-		ModuleInfo<FI>& module = *m_Modules.emplace_back(
-			std::make_unique<ModuleInfo<FI>>(VirtualModule<FI>(svm::detail::GetAbsolutePath(virtualPath))));
-		return std::get<VirtualModule<FI>>(module.Module);
+		const auto index = static_cast<std::uint32_t>(m_Modules.size());
+		auto module = VirtualModule<FI>(svm::detail::GetAbsolutePath(virtualPath));
+		module.UpdateStructureInfos(index);
+
+		return std::get<VirtualModule<FI>>(
+			m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(std::move(module)))->Module);
 	}
 	template<typename FI>
 	void Loader<FI>::LoadDependencies(Module<FI> module) {
@@ -83,12 +91,5 @@ namespace svm::core {
 	template<typename FI>
 	void Loader<FI>::SetModules(Modules<FI>&& newModules) noexcept {
 		m_Modules = std::move(newModules);
-	}
-
-	template<typename FI>
-	void Loader<FI>::UpdateStructureInfos() {
-		for (std::size_t i = 0; i < m_Modules.size(); ++i) {
-			m_Modules[i]->UpdateStructureInfos(static_cast<std::uint32_t>(i));
-		}
 	}
 }

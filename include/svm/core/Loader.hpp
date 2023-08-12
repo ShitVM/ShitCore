@@ -35,8 +35,6 @@ namespace svm::core {
 		const Modules<FI>& GetModules() const noexcept;
 		Modules<FI>& GetModules() noexcept;
 		void SetModules(Modules<FI>&& newModules) noexcept;
-
-		void UpdateStructureInfos();
 	};
 }
 
