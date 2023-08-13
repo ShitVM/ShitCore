@@ -29,7 +29,8 @@ namespace svm::core {
 		void Clear() noexcept;
 
 		Module<FI> Load(const std::filesystem::path& path);
-		VirtualModule<FI>& Create(const std::string& virtualPath);
+		VirtualModule<FI>& Create(std::string virtualPath);
+		void Build(VirtualModule<FI>& module);
 
 		Module<FI> GetModule(std::uint32_t index) const noexcept;
 		Module<FI> GetModule(const ModulePath& path) const noexcept;

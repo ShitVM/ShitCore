@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cassert>
 #include <memory>
+#include <iterator>
 #include <stdexcept>
 #include <utility>
 #include <variant>
@@ -44,17 +45,24 @@ namespace svm::core {
 		return *result;
 	}
 	template<typename FI>
-	VirtualModule<FI>& Loader<FI>::Create(const std::string& virtualPath) {
+	VirtualModule<FI>& Loader<FI>::Create(std::string virtualPath) {
 		assert(virtualPath.size() >= 2);
 		assert(virtualPath[0] == '/');
 
-		const auto index = static_cast<std::uint32_t>(m_Modules.size());
-		auto module = VirtualModule<FI>(virtualPath);
-		module.UpdateStructureInfos(index); // TODO: ¼öÁ¤
+		return std::get<VirtualModule<FI>>(
+			m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(VirtualModule<FI>(std::move(virtualPath))))->Module);
+	}
+	template<typename FI>
+	void Loader<FI>::Build(VirtualModule<FI>& module) {
+		const auto moduleIter = std::find_if(m_Modules.begin(), m_Modules.end(), [&module](const auto& module2) {
+			return std::holds_alternative<VirtualModule<FI>>(module2->Module) &&
+				&std::get<VirtualModule<FI>>(module2->Module) == &module;
+		});
+		const auto index = static_cast<std::uint32_t>(std::distance(m_Modules.begin(), moduleIter));
 
-		auto result = m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(std::move(module))).get();
-		LoadDependencies(result);
-		return std::get<VirtualModule<FI>>(result->Module);
+		module.UpdateStructureInfos(index);
+
+		LoadDependencies(moduleIter->get());
 	}
 
 	template<typename FI>
@@ -115,7 +123,7 @@ namespace svm::core {
 			for (auto& field : module->GetStructure(i).Fields) {
 				if (field.Type->Code != TypeCode::None) continue;
 
-				const auto dependency = module->GetDependencies()[field.Type->Module - 1];
+				const auto& dependency = module->GetDependencies()[field.Type->Module - 1];
 				const auto target = GetModuleInternal(ResolveDependency(*module, dependency));
 				field.Type = target->GetStructure(field.Type->Name)->Type;
 			}

@@ -20,7 +20,10 @@ namespace svm {
 	}
 
 	void Mappings::AddStructureMapping(std::uint32_t module, std::string name) {
-		m_StructureMappings.push_back({ module, std::move(name) });
+		m_StructureMappings.push_back({ module, name });
+
+		m_StructureMappings.back().TempType.Name = std::move(name);
+		m_StructureMappings.back().TempType.Module = module + 1;
 	}
 	void Mappings::AddFunctionMapping(std::uint32_t module, std::string name) {
 		m_FunctionMappings.push_back({ module, std::move(name) });
