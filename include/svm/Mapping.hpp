@@ -1,23 +1,33 @@
 #pragma once
 
+#include <svm/Type.hpp>
+
 #include <cstdint>
 #include <string>
 #include <vector>
 
 namespace svm {
-	struct Mapping final {
+	struct Mapping {
 		std::uint32_t Module;
 		std::string Name;
 	};
 
+	struct StructureMapping final : Mapping {
+		TypeInfo TempType;
+	};
+
+	using FunctionMapping = Mapping;
+}
+
+namespace svm {
 	class Mappings final {
 	private:
-		std::vector<Mapping> m_StructureMappings;
-		std::vector<Mapping> m_FunctionMappings;
+		std::vector<StructureMapping> m_StructureMappings;
+		std::vector<FunctionMapping> m_FunctionMappings;
 
 	public:
 		Mappings() = default;
-		Mappings(std::vector<Mapping> structures, std::vector<Mapping> functions) noexcept;
+		Mappings(std::vector<StructureMapping> structures, std::vector<FunctionMapping> functions) noexcept;
 		Mappings(Mappings&& mappings) noexcept;
 		~Mappings() = default;
 
@@ -32,9 +42,9 @@ namespace svm {
 		void AddStructureMapping(std::uint32_t module, std::string name);
 		void AddFunctionMapping(std::uint32_t module, std::string name);
 
-		const Mapping& GetStructureMapping(std::uint32_t index) const noexcept;
+		const StructureMapping& GetStructureMapping(std::uint32_t index) const noexcept;
 		std::uint32_t GetStructureMappingCount() const noexcept;
-		const Mapping& GetFunctionMapping(std::uint32_t index) const noexcept;
+		const FunctionMapping& GetFunctionMapping(std::uint32_t index) const noexcept;
 		std::uint32_t GetFunctionMappingCount() const noexcept;
 	};
 }

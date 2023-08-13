@@ -2,6 +2,7 @@
 
 #include <svm/Specification.hpp>
 #include <svm/Structure.hpp>
+#include <svm/Type.hpp>
 #include <svm/core/ByteFile.hpp>
 
 #include <cstddef>
@@ -43,14 +44,17 @@ namespace svm::core {
 		inline std::string ReadFileString();
 		inline auto ReadFile(std::size_t size) noexcept;
 
+		Type GetType(TypeCode code);
+
 		void ParseDependencies();
+		void ParseMappings();
+		template<typename T>
+		void ParseMappings(std::vector<T>& mappings) noexcept;
 		void ParseConstantPool();
 		template<typename T>
 		void ParseConstants(std::vector<T>& pool) noexcept;
 		void ParseStructures();
 		void ParseFunctions();
-		void ParseMappings();
-		void ParseMappings(std::vector<Mapping>& mappings) noexcept;
 		Instructions ParseInstructions();
 
 		void FindCycle() const;

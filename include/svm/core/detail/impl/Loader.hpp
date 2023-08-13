@@ -1,6 +1,7 @@
 #pragma once
 #include <svm/core/Loader.hpp>
 
+#include <svm/Structure.hpp>
 #include <svm/core/Parser.hpp>
 #include <svm/detail/FileSystem.hpp>
 
@@ -49,17 +50,20 @@ namespace svm::core {
 	}
 	template<typename FI>
 	void Loader<FI>::LoadDependencies(Module<FI> module) {
-		if (!std::holds_alternative<ByteFile>(module->Module)) return;
+		for (const auto& dependency : module->GetDependencies()) {
+			if (GetModule(dependency) != nullptr) continue; // TODO: 무조건 의존성을 불러오도록 변경
 
-		const ByteFile& byteFile = std::get<ByteFile>(module->Module);
-		const std::vector<std::string>& dependencies = byteFile.GetDependencies();
-
-		for (const std::string& dependency : dependencies) {
-			if (GetModule(dependency) != nullptr) continue;
-
-			const svm::detail::fs::path& path = svm::detail::fs::u8path(byteFile.GetPath()).parent_path() / dependency;
+			const auto path = svm::detail::fs::u8path(module->GetPath()).parent_path() / dependency;
 
 			LoadDependencies(Load(path.generic_string()));
+		}
+
+		const auto structCount = module->GetStructureCount();
+		for (std::uint32_t i = 0; i < structCount; ++i) {
+			for (auto& field : module->GetStructure(i).Fields) {
+				const auto target = GetModule(module->GetDependencies()[field.Type->Module - 1]);
+				field.Type = target->GetStructure(field.Type->Name)->Type;
+			}
 		}
 	}
 

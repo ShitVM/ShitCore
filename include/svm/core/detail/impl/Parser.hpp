@@ -29,6 +29,14 @@ namespace svm::core {
 	}
 
 	template<typename T>
+	void Parser::ParseMappings(std::vector<T>& mappings) noexcept {
+		for (T& mapping : mappings) {
+			mapping.Module = ReadFile<std::uint32_t>();
+			mapping.Name = ReadFileString();
+		}
+	}
+
+	template<typename T>
 	void Parser::ParseConstants(std::vector<T>& pool) noexcept {
 		for (T& obj : pool) {
 			obj.Value = ReadFile<decltype(obj.Value)>();

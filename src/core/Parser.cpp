@@ -78,6 +78,19 @@ namespace svm::core {
 		return std::move(m_ByteFile);
 	}
 
+	Type Parser::GetType(TypeCode code) {
+		auto result = GetFundamentalType(code);
+		if (result != NoneType) return result;
+
+		result = GetStructureType(m_ByteFile.GetStructures(), code);
+		if (result != NoneType) return result;
+
+		return m_ByteFile.GetMappings().GetStructureMapping(
+			static_cast<std::uint32_t>(code)
+			- static_cast<std::uint32_t>(TypeCode::Structure)
+			- static_cast<std::uint32_t>(m_ByteFile.GetStructures().size())).TempType;
+	}
+
 	void Parser::ParseDependencies() {
 		const auto depenCount = ReadFile<std::uint32_t>();
 		std::vector<std::string> dependencies;
@@ -86,6 +99,22 @@ namespace svm::core {
 		}
 
 		m_ByteFile.SetDependencies(std::move(dependencies));
+	}
+	void Parser::ParseMappings() {
+		const auto structMappingCount = ReadFile<std::uint32_t>();
+		std::vector<StructureMapping> structMappings(structMappingCount);
+		ParseMappings(structMappings);
+
+		for (auto& mapping : structMappings) {
+			mapping.TempType.Name = mapping.Name;
+			mapping.TempType.Module = mapping.Module + 1;
+		}
+
+		const auto funcMappingCount = ReadFile<std::uint32_t>();
+		std::vector<FunctionMapping> funcMappings(funcMappingCount);
+		ParseMappings(funcMappings);
+
+		m_ByteFile.SetMappings({ std::move(structMappings), std::move(funcMappings) });
 	}
 	void Parser::ParseConstantPool() {
 		const auto intCount = ReadFile<std::uint32_t>();
@@ -117,7 +146,7 @@ namespace svm::core {
 				Field& field = structures[i].Fields[j];
 
 				const auto typeCode = ReadFile<std::uint32_t>();
-				field.Type = GetType(structures, static_cast<TypeCode>(typeCode & 0x7FFFFFFF));
+				field.Type = GetType(static_cast<TypeCode>(typeCode & 0x7FFFFFFF));
 				if (typeCode >> 31) {
 					field.Count = ReadFile<std::uint64_t>();
 				}
@@ -143,23 +172,6 @@ namespace svm::core {
 		}
 
 		m_ByteFile.SetFunctions(std::move(functions));
-	}
-	void Parser::ParseMappings() {
-		const auto structMappingCount = ReadFile<std::uint32_t>();
-		std::vector<Mapping> structMappings(structMappingCount);
-		ParseMappings(structMappings);
-
-		const auto funcMappingCount = ReadFile<std::uint32_t>();
-		std::vector<Mapping> funcMappings(funcMappingCount);
-		ParseMappings(funcMappings);
-
-		m_ByteFile.SetMappings({ std::move(structMappings), std::move(funcMappings) });
-	}
-	void Parser::ParseMappings(std::vector<Mapping>& mappings) noexcept {
-		for (Mapping& mapping : mappings) {
-			mapping.Module = ReadFile<std::uint32_t>();
-			mapping.Name = ReadFileString();
-		}
 	}
 	Instructions Parser::ParseInstructions() {
 		const auto labelCount = ReadFile<std::uint32_t>();

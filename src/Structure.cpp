@@ -48,6 +48,12 @@ namespace svm {
 }
 
 namespace svm {
+	Type GetStructureType(const Structures& structures, TypeCode code) noexcept {
+		const auto index = static_cast<std::uint32_t>(code) - static_cast<std::uint32_t>(TypeCode::Structure);
+		if (index < static_cast<std::uint32_t>(structures.size())) return structures[index].Type;
+		else return NoneType;
+	}
+
 	std::ostream& operator<<(std::ostream& stream, const Structure& structure) {
 		return stream << *structure;
 	}

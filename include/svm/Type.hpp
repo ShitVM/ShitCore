@@ -64,8 +64,5 @@ namespace svm {
 	extern const Type GCPointerType;
 	extern const Type ArrayType;
 
-	template<typename T>
-	Type GetType(const T& structures, TypeCode code) noexcept;
+	Type GetFundamentalType(TypeCode code) noexcept;
 }
-
-#include "detail/impl/Type.hpp"

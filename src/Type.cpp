@@ -57,4 +57,15 @@ namespace svm {
 	const Type PointerType = s_PointerType;
 	const Type GCPointerType = s_GCPointerType;
 	const Type ArrayType = s_ArrayType;
+
+	Type GetFundamentalType(TypeCode code) noexcept {
+		switch (code) {
+		case TypeCode::Int: return IntType;
+		case TypeCode::Long: return LongType;
+		case TypeCode::Double: return DoubleType;
+		case TypeCode::Pointer: return PointerType;
+		case TypeCode::GCPointer: return GCPointerType;
+		default: return NoneType;
+		}
+	}
 }

@@ -50,6 +50,8 @@ namespace svm {
 	using Structures = std::vector<StructureInfo>;
 	using Cycle = std::vector<Structure>;
 
+	Type GetStructureType(const Structures& structures, TypeCode code) noexcept;
+
 	std::ostream& operator<<(std::ostream& stream, const Structure& structure);
 	std::ostream& operator<<(std::ostream& stream, const Structures& structures);
 }

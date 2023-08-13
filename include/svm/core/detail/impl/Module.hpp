@@ -44,6 +44,13 @@ namespace svm::core {
 		else return std::get<VirtualModule<FI>>(Module).GetPath();
 	}
 	template<typename FI>
+	const std::vector<std::string>& ModuleInfo<FI>::GetDependencies() const noexcept {
+		assert(!IsEmpty());
+
+		if (IsByteFile()) return std::get<ByteFile>(Module).GetDependencies();
+		else return std::get<VirtualModule<FI>>(Module).GetDependencies();
+	}
+	template<typename FI>
 	Structure ModuleInfo<FI>::GetStructure(std::uint32_t index) const noexcept {
 		assert(!IsEmpty());
 
