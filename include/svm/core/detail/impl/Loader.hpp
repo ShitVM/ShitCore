@@ -39,8 +39,8 @@ namespace svm::core {
 		byteFile.UpdateStructureInfos(index);
 		byteFile.UpdateFunctionInfos(index);
 
-		auto& result = m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(std::move(byteFile)));
-		LoadDependencies(result.get());
+		auto result = m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(std::move(byteFile))).get();
+		LoadDependencies(result);
 		return *result;
 	}
 	template<typename FI>
@@ -49,9 +49,9 @@ namespace svm::core {
 		auto module = VirtualModule<FI>(svm::detail::GetAbsolutePath(virtualPath));
 		module.UpdateStructureInfos(index);
 
-		auto& result = m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(std::move(module)));
-		LoadDependencies(result.get());
-		return std::get<VirtualModule<FI>>(result->Module);
+		auto result = m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(std::move(module))).get();
+		LoadDependencies(result);
+		return std::get<VirtualModule<FI>>(result.Module);
 	}
 
 	template<typename FI>
@@ -87,7 +87,7 @@ namespace svm::core {
 	template<typename FI>
 	void Loader<FI>::LoadDependencies(ModuleInfo<FI>* module) {
 		for (const auto& dependency : module->GetDependencies()) {
-			if (GetModule(dependency) != nullptr) continue;
+			if (GetModuleInternal(module, dependency) != nullptr) continue;
 
 			const auto path = svm::detail::fs::u8path(module->GetPath()).parent_path() / dependency;
 			Load(path.generic_string());
@@ -96,8 +96,10 @@ namespace svm::core {
 		const auto structCount = module->GetStructureCount();
 		for (std::uint32_t i = 0; i < structCount; ++i) {
 			for (auto& field : module->GetStructure(i).Fields) {
+				if (field.Type->Code != TypeCode::None) continue;
+
 				const auto dependency = module->GetDependencies()[field.Type->Module - 1];
-				const auto target = GetModuleInternal(dependency);
+				const auto target = GetModuleInternal(module, dependency);
 				field.Type = target->GetStructure(field.Type->Name)->Type;
 			}
 		}
@@ -193,8 +195,8 @@ namespace svm::core {
 	}
 
 	template<typename FI>
-	ModuleInfo<FI>* Loader<FI>::GetModuleInternal(const std::string& path) noexcept {
-		const std::string absPath = svm::detail::GetAbsolutePath(path);
+	ModuleInfo<FI>* Loader<FI>::GetModuleInternal(ModuleInfo<FI>* module, const std::string& path) noexcept {
+		const std::string absPath = (svm::detail::fs::u8path(module->GetPath()).parent_path() / path).generic_u8string();
 		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [absPath](const auto& module) {
 			return module->GetPath() == absPath;
 		});
