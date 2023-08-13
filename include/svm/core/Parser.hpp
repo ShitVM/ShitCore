@@ -1,6 +1,7 @@
 #pragma once
 
 #include <svm/Specification.hpp>
+#include <svm/Structure.hpp>
 #include <svm/Type.hpp>
 #include <svm/core/ByteFile.hpp>
 
@@ -42,7 +43,7 @@ namespace svm::core {
 		inline std::string ReadFileString();
 		inline auto ReadFile(std::size_t size) noexcept;
 
-		Type GetType(TypeCode code);
+		Type GetType(Structures& structures, TypeCode code);
 
 		void ParseDependencies();
 		void ParseMappings();

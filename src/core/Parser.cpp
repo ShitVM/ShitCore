@@ -1,6 +1,5 @@
 #include <svm/core/Parser.hpp>
 
-#include <svm/Structure.hpp>
 #include <svm/detail/FileSystem.hpp>
 
 #include <fstream>
@@ -77,17 +76,17 @@ namespace svm::core {
 		return std::move(m_ByteFile);
 	}
 
-	Type Parser::GetType(TypeCode code) {
+	Type Parser::GetType(Structures& structures, TypeCode code) {
 		auto result = GetFundamentalType(code);
 		if (result != NoneType) return result;
 
-		result = GetStructureType(m_ByteFile.GetStructures(), code);
+		result = GetStructureType(structures, code);
 		if (result != NoneType) return result;
 
 		return m_ByteFile.GetMappings().GetStructureMapping(
 			static_cast<std::uint32_t>(code)
 			- static_cast<std::uint32_t>(TypeCode::Structure)
-			- static_cast<std::uint32_t>(m_ByteFile.GetStructures().size())).TempType;
+			- static_cast<std::uint32_t>(structures.size())).TempType;
 	}
 
 	void Parser::ParseDependencies() {
@@ -145,7 +144,7 @@ namespace svm::core {
 				Field& field = structures[i].Fields[j];
 
 				const auto typeCode = ReadFile<std::uint32_t>();
-				field.Type = GetType(static_cast<TypeCode>(typeCode & 0x7FFFFFFF));
+				field.Type = GetType(structures, static_cast<TypeCode>(typeCode & 0x7FFFFFFF));
 				if (typeCode >> 31) {
 					field.Count = ReadFile<std::uint64_t>();
 				}
