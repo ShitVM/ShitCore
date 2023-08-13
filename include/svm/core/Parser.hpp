@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <filesystem>
 #include <string>
 #include <vector>
 
@@ -33,7 +34,7 @@ namespace svm::core {
 	public:
 		void Clear() noexcept;
 
-		void Open(const std::string& path);
+		void Open(const std::filesystem::path& path);
 		void Parse();
 		ByteFile GetResult() noexcept;
 

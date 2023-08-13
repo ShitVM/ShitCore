@@ -4,9 +4,9 @@
 #include <svm/Memory.hpp>
 #include <svm/Structure.hpp>
 #include <svm/core/Parser.hpp>
-#include <svm/detail/FileSystem.hpp>
 
 #include <algorithm>
+#include <cassert>
 #include <memory>
 #include <stdexcept>
 #include <utility>
@@ -29,7 +29,7 @@ namespace svm::core {
 	}
 
 	template<typename FI>
-	Module<FI> Loader<FI>::Load(const std::string& path) {
+	Module<FI> Loader<FI>::Load(const std::filesystem::path& path) {
 		Parser parser;
 		parser.Open(path);
 		parser.Parse();
@@ -45,13 +45,16 @@ namespace svm::core {
 	}
 	template<typename FI>
 	VirtualModule<FI>& Loader<FI>::Create(const std::string& virtualPath) {
+		assert(virtualPath.size() >= 2);
+		assert(virtualPath[0] == '/');
+
 		const auto index = static_cast<std::uint32_t>(m_Modules.size());
-		auto module = VirtualModule<FI>(svm::detail::GetAbsolutePath(virtualPath));
-		module.UpdateStructureInfos(index);
+		auto module = VirtualModule<FI>(virtualPath);
+		module.UpdateStructureInfos(index); // TODO: ¼öÁ¤
 
 		auto result = m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(std::move(module))).get();
 		LoadDependencies(result);
-		return std::get<VirtualModule<FI>>(result.Module);
+		return std::get<VirtualModule<FI>>(result->Module);
 	}
 
 	template<typename FI>
@@ -59,10 +62,9 @@ namespace svm::core {
 		return *m_Modules[index];
 	}
 	template<typename FI>
-	Module<FI> Loader<FI>::GetModule(const std::string& path) const noexcept {
-		const std::string absPath = svm::detail::GetAbsolutePath(path);
-		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [absPath](const auto& module) {
-			return module->GetPath() == absPath;
+	Module<FI> Loader<FI>::GetModule(const ModulePath& path) const noexcept {
+		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [path](const auto& module) {
+			return module->GetPath() == path;
 		});
 		if (iter == m_Modules.end()) return nullptr;
 		else return **iter;
@@ -85,12 +87,23 @@ namespace svm::core {
 	}
 
 	template<typename FI>
+	ModulePath Loader<FI>::ResolveDependency(Module<FI> module, const std::string& dependency) const {
+		if (dependency[0] == '/') return dependency;
+
+		if (std::holds_alternative<std::filesystem::path>(module->GetPath())) {
+			return std::filesystem::canonical(std::get<std::filesystem::path>(module->GetPath()) / std::filesystem::u8path(dependency));
+		} else if (std::holds_alternative<std::string>(module->GetPath())) {
+			return (std::filesystem::u8path(std::get<std::string>(module->GetPath())) / std::filesystem::u8path(dependency)).generic_u8string();
+		}
+	}
+
+	template<typename FI>
 	void Loader<FI>::LoadDependencies(ModuleInfo<FI>* module) {
 		for (const auto& dependency : module->GetDependencies()) {
-			if (GetModuleInternal(module, dependency) != nullptr) continue;
+			const auto path = ResolveDependency(*module, dependency);
+			if (GetModuleInternal(path) != nullptr) continue;
 
-			const auto path = svm::detail::fs::u8path(module->GetPath()).parent_path() / dependency;
-			Load(path.generic_string());
+			Load(std::get<std::filesystem::path>(path));
 		}
 
 		const auto structCount = module->GetStructureCount();
@@ -99,7 +112,7 @@ namespace svm::core {
 				if (field.Type->Code != TypeCode::None) continue;
 
 				const auto dependency = module->GetDependencies()[field.Type->Module - 1];
-				const auto target = GetModuleInternal(module, dependency);
+				const auto target = GetModuleInternal(ResolveDependency(*module, dependency));
 				field.Type = target->GetStructure(field.Type->Name)->Type;
 			}
 		}
@@ -195,10 +208,9 @@ namespace svm::core {
 	}
 
 	template<typename FI>
-	ModuleInfo<FI>* Loader<FI>::GetModuleInternal(ModuleInfo<FI>* module, const std::string& path) noexcept {
-		const std::string absPath = (svm::detail::fs::u8path(module->GetPath()).parent_path() / path).generic_u8string();
-		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [absPath](const auto& module) {
-			return module->GetPath() == absPath;
+	ModuleInfo<FI>* Loader<FI>::GetModuleInternal(const ModulePath& path) noexcept {
+		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [path](const auto& module) {
+			return module->GetPath() == path;
 		});
 		if (iter == m_Modules.end()) return nullptr;
 		else return iter->get();

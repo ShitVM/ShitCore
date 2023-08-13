@@ -5,10 +5,10 @@
 
 namespace svm::core {
 	template<typename F>
-	ModuleBase<F>::ModuleBase(std::string path) noexcept
+	ModuleBase<F>::ModuleBase(ModulePath path) noexcept
 		: m_Path(std::move(path)) {}
 	template<typename F>
-	ModuleBase<F>::ModuleBase(std::string path, std::vector<std::string> dependencies, Structures&& structures,
+	ModuleBase<F>::ModuleBase(ModulePath path, std::vector<std::string> dependencies, Structures&& structures,
 		F&& functions, Mappings&& mappings) noexcept
 		: m_Path(std::move(path)), m_Dependencies(std::move(dependencies)), m_Structures(std::move(structures)),
 		m_Functions(std::move(functions)), m_Mappings(std::move(mappings)) {}
@@ -28,11 +28,11 @@ namespace svm::core {
 	}
 
 	template<typename F>
-	std::string_view ModuleBase<F>::GetPath() const noexcept {
+	const ModulePath& ModuleBase<F>::GetPath() const noexcept {
 		return m_Path;
 	}
 	template<typename F>
-	void ModuleBase<F>::SetPath(std::string newPath) noexcept {
+	void ModuleBase<F>::SetPath(ModulePath newPath) noexcept {
 		m_Path = std::move(newPath);
 	}
 	template<typename F>

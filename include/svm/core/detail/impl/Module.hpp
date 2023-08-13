@@ -36,7 +36,7 @@ namespace svm::core {
 	}
 
 	template<typename FI>
-	std::string_view ModuleInfo<FI>::GetPath() const noexcept {
+	const ModulePath& ModuleInfo<FI>::GetPath() const noexcept {
 		assert(!IsEmpty());
 
 		if (IsByteFile()) return std::get<ByteFile>(Module).GetPath();

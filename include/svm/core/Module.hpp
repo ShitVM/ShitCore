@@ -35,7 +35,7 @@ namespace svm::core {
 		bool IsByteFile() const noexcept;
 		bool IsVirtualModule() const noexcept;
 
-		std::string_view GetPath() const noexcept;
+		const ModulePath& GetPath() const noexcept;
 		const std::vector<std::string>& GetDependencies() const noexcept;
 		Structure GetStructure(std::uint32_t index) const noexcept;
 		Structure GetStructure(const std::string& name) const noexcept;

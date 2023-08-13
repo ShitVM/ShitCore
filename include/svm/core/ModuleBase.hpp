@@ -3,15 +3,21 @@
 #include <svm/Mapping.hpp>
 #include <svm/Structure.hpp>
 
+#include <filesystem>
+#include <ostream>
 #include <string>
-#include <string_view>
+#include <variant>
 #include <vector>
 
 namespace svm::core {
+	using ModulePath = std::variant<std::filesystem::path, std::string>;
+
+	std::ostream& operator<<(std::ostream& stream, const ModulePath& path);
+
 	template<typename F>
 	class ModuleBase {
 	private:
-		std::string m_Path;
+		ModulePath m_Path;
 		std::vector<std::string> m_Dependencies;
 		Structures m_Structures;
 		F m_Functions;
@@ -19,8 +25,8 @@ namespace svm::core {
 
 	public:
 		ModuleBase() noexcept = default;
-		explicit ModuleBase(std::string path) noexcept;
-		ModuleBase(std::string path, std::vector<std::string> dependencies, Structures&& structures,
+		explicit ModuleBase(ModulePath path) noexcept;
+		ModuleBase(ModulePath path, std::vector<std::string> dependencies, Structures&& structures,
 			F&& functions, Mappings&& mappings) noexcept;
 		ModuleBase(ModuleBase&& module) noexcept;
 		~ModuleBase() = default;
@@ -31,8 +37,8 @@ namespace svm::core {
 		bool operator!=(const ModuleBase&) = delete;
 
 	public:
-		std::string_view GetPath() const noexcept;
-		void SetPath(std::string newPath) noexcept;
+		const ModulePath& GetPath() const noexcept;
+		void SetPath(ModulePath newPath) noexcept;
 		const std::vector<std::string>& GetDependencies() const noexcept;
 		std::vector<std::string>& GetDependencies() noexcept;
 		void SetDependencies(std::vector<std::string> newDependencies) noexcept;

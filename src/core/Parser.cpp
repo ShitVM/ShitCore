@@ -1,7 +1,5 @@
 #include <svm/core/Parser.hpp>
 
-#include <svm/detail/FileSystem.hpp>
-
 #include <fstream>
 #include <ios>
 
@@ -29,7 +27,7 @@ namespace svm::core {
 		m_ShitBCVersion = ShitBCVersion::Latest;
 	}
 
-	void Parser::Open(const std::string& path) {
+	void Parser::Open(const std::filesystem::path& path) {
 		std::ifstream stream(path, std::ifstream::binary);
 		if (!stream) throw std::runtime_error("Failed to open the file.");
 
@@ -48,7 +46,7 @@ namespace svm::core {
 		m_Cursor = 0;
 
 		m_ByteFile.Clear();
-		m_ByteFile.SetPath(detail::GetAbsolutePath(path));
+		m_ByteFile.SetPath(std::filesystem::canonical(path));
 	}
 	void Parser::Parse() {
 		if (!m_File.size()) throw std::runtime_error("Failed to parse the file. Invalid format.");

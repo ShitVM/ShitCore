@@ -5,6 +5,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <filesystem>
 #include <string>
 #include <unordered_map>
 
@@ -27,15 +28,17 @@ namespace svm::core {
 	public:
 		void Clear() noexcept;
 
-		Module<FI> Load(const std::string& path);
+		Module<FI> Load(const std::filesystem::path& path);
 		VirtualModule<FI>& Create(const std::string& virtualPath);
 
 		Module<FI> GetModule(std::uint32_t index) const noexcept;
-		Module<FI> GetModule(const std::string& path) const noexcept;
+		Module<FI> GetModule(const ModulePath& path) const noexcept;
 		std::uint32_t GetModuleCount() const noexcept;
 		const Modules<FI>& GetModules() const noexcept;
 		Modules<FI>& GetModules() noexcept;
 		void SetModules(Modules<FI>&& newModules) noexcept;
+
+		ModulePath ResolveDependency(Module<FI> module, const std::string& dependency) const;
 
 	private:
 		void LoadDependencies(ModuleInfo<FI>* module);
@@ -47,7 +50,7 @@ namespace svm::core {
 		std::size_t CalcSize(ModuleInfo<FI>* module, std::uint32_t node);
 		void CalcOffset(ModuleInfo<FI>* module);
 
-		ModuleInfo<FI>* GetModuleInternal(ModuleInfo<FI>* module, const std::string& path) noexcept;
+		ModuleInfo<FI>* GetModuleInternal(const ModulePath& path) noexcept;
 	};
 }
 
