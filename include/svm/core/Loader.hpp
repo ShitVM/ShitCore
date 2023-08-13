@@ -3,8 +3,10 @@
 #include <svm/core/Module.hpp>
 #include <svm/core/virtual/VirtualModule.hpp>
 
+#include <cstddef>
 #include <cstdint>
 #include <string>
+#include <unordered_map>
 
 namespace svm::core {
 	template<typename FI>
@@ -37,6 +39,13 @@ namespace svm::core {
 
 	private:
 		void LoadDependencies(ModuleInfo<FI>* module);
+
+		void FindCycle(ModuleInfo<FI>* module) const;
+		bool FindCycle(std::unordered_map<void*, std::unordered_map<std::uint32_t, int>>& visited,
+			ModuleInfo<FI>* module, std::uint32_t node) const;
+		void CalcSize(ModuleInfo<FI>* module);
+		std::size_t CalcSize(ModuleInfo<FI>* module, std::uint32_t node);
+		void CalcOffset(ModuleInfo<FI>* module);
 
 		ModuleInfo<FI>* GetModuleInternal(const std::string& path) noexcept;
 	};

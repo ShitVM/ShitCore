@@ -1,11 +1,10 @@
 #include <svm/core/Parser.hpp>
 
+#include <svm/Structure.hpp>
 #include <svm/detail/FileSystem.hpp>
 
 #include <fstream>
 #include <ios>
-#include <sstream>
-#include <stdexcept>
 
 namespace svm::core {
 	Parser::Parser(Parser&& parser) noexcept
@@ -68,10 +67,10 @@ namespace svm::core {
 			m_ShitBCVersion < ShitBCVersion::Least) throw std::runtime_error("Failed to parse the file. Incompatible ShitBC version.");
 
 		ParseDependencies();
+		ParseMappings();
 		ParseConstantPool();
 		ParseStructures();
 		ParseFunctions();
-		ParseMappings();
 		m_ByteFile.SetEntrypoint(ParseInstructions());
 	}
 	ByteFile Parser::GetResult() noexcept {
@@ -154,12 +153,6 @@ namespace svm::core {
 		}
 
 		m_ByteFile.SetStructures(std::move(structures));
-
-		if (structCount >= 2) { // TODO
-			FindCycle();
-		}
-		CalcSize();
-		CalcOffset();
 	}
 	void Parser::ParseFunctions() {
 		const auto funcCount = ReadFile<std::uint32_t>();
@@ -197,97 +190,6 @@ namespace svm::core {
 		return { std::move(labels), std::move(insts) };
 	}
 
-	void Parser::FindCycle() const {
-		std::vector<Structure> cycle;
-
-		const Structures& structures = m_ByteFile.GetStructures();
-		const std::uint32_t structCount = static_cast<std::uint32_t>(structures.size());
-		for (std::uint32_t i = 0; i < structCount; ++i) {
-			std::unordered_map<std::uint32_t, int> visited;
-
-			if (FindCycle(structures, visited, cycle, i)) {
-				std::ostringstream oss;
-				oss << "Failed to parse the file. Detected circular reference in the structures([" << i << ']';
-				for (auto iter = cycle.rbegin(); iter < cycle.rend(); ++iter) {
-					oss << "-[" << static_cast<std::uint32_t>((*iter)->Type.Code) - static_cast<std::uint32_t>(TypeCode::Structure) << ']';
-				}
-				oss << ").";
-
-				throw std::runtime_error(oss.str());
-			}
-		}
-	}
-	bool Parser::FindCycle(const Structures& structures, std::unordered_map<std::uint32_t, int>& visited, std::vector<Structure>& cycle, std::uint32_t node) const {
-		int& status = visited[node];
-		if (status) return status == 1;
-
-		const std::uint32_t fieldCount = static_cast<std::uint32_t>(structures[node].Fields.size());
-
-		status = 1;
-		for (std::uint32_t i = 0; i < fieldCount; ++i) {
-			const Type type = structures[node].Fields[i].Type;
-			if (!type.IsStructure()) continue;
-			else if (const auto index = static_cast<std::uint32_t>(type->Code) - static_cast<std::uint32_t>(TypeCode::Structure);
-					 FindCycle(structures, visited, cycle, index)) {
-				cycle.push_back(structures[index]);
-				return true;
-			}
-		}
-
-		status = 2;
-		return false;
-	}
-	void Parser::CalcSize() {
-		Structures& structures = m_ByteFile.GetStructures();
-		const std::uint32_t structCount = static_cast<std::uint32_t>(structures.size());
-		for (std::uint32_t i = 0; i < structCount; ++i) {
-			structures[i].Type.Size = CalcSize(structures, i);
-		}
-	}
-	std::size_t Parser::CalcSize(Structures& structures, std::uint32_t node) {
-		std::size_t& s = structures[node].Type.Size;
-		if (s) return s;
-
-		const std::uint32_t fieldCount = static_cast<std::uint32_t>(structures[node].Fields.size());
-
-		for (std::size_t i = 0; i < fieldCount; ++i) {
-			const Field& field = structures[node].Fields[i];
-			const Type type = field.Type;
-			std::size_t size = type->Size;
-			if (type.IsStructure()) {
-				size = CalcSize(structures, static_cast<std::uint32_t>(type->Code) - static_cast<std::uint32_t>(TypeCode::Structure));
-			}
-
-			if (field.IsArray()) {
-				s += static_cast<std::size_t>(size * field.Count + sizeof(std::uint64_t));
-			} else {
-				s += size;
-			}
-		}
-
-		s += sizeof(Type);
-		return s = Pade<void*>(s);
-	}
-	void Parser::CalcOffset() {
-		Structures& structures = m_ByteFile.GetStructures();
-		const std::uint32_t structCode = static_cast<std::uint32_t>(structures.size());
-		for (std::uint32_t i = 0; i < structCode; ++i) {
-			StructureInfo& structure = structures[i];
-			const std::uint32_t fieldCount = static_cast<std::uint32_t>(structure.Fields.size());
-
-			std::size_t offset = sizeof(Type);
-			for (std::uint32_t j = 0; j < fieldCount; ++j) {
-				Field& field = structure.Fields[j];
-
-				field.Offset = offset;
-				if (field.IsArray()) {
-					offset += static_cast<std::size_t>(field.Type->Size * field.Count + sizeof(ArrayObject));
-				} else {
-					offset += field.Type->Size;
-				}
-			}
-		}
-	}
 	OpCode Parser::ReadOpCode() noexcept {
 		return ConvertOpCode(ReadFile<std::uint8_t>(), m_ShitBCVersion);
 	}

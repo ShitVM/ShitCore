@@ -1,12 +1,14 @@
 #pragma once
 #include <svm/core/Loader.hpp>
 
+#include <svm/Memory.hpp>
 #include <svm/Structure.hpp>
 #include <svm/core/Parser.hpp>
 #include <svm/detail/FileSystem.hpp>
 
 #include <algorithm>
 #include <memory>
+#include <stdexcept>
 #include <utility>
 #include <variant>
 
@@ -97,6 +99,95 @@ namespace svm::core {
 				const auto dependency = module->GetDependencies()[field.Type->Module - 1];
 				const auto target = GetModuleInternal(dependency);
 				field.Type = target->GetStructure(field.Type->Name)->Type;
+			}
+		}
+
+		FindCycle(module);
+		CalcSize(module);
+		CalcOffset(module);
+	}
+
+	template<typename FI>
+	void Loader<FI>::FindCycle(ModuleInfo<FI>* module) const {
+		const auto structCount = module->GetStructureCount();
+		for (std::uint32_t i = 0; i < structCount; ++i) {
+			std::unordered_map<void*, std::unordered_map<std::uint32_t, int>> visited; // visited[module][structure]
+
+			if (FindCycle(visited, module, i)) throw std::runtime_error("Failed to load the file. Detected circular reference.");
+		}
+	}
+	template<typename FI>
+	bool Loader<FI>::FindCycle(std::unordered_map<void*, std::unordered_map<std::uint32_t, int>>& visited,
+		ModuleInfo<FI>* module, std::uint32_t node) const {
+		int& status = visited[module][node];
+		if (status) return status == 1;
+
+		const StructureInfo& structure = module->GetStructure(node);
+		const auto fieldCount = static_cast<std::uint32_t>(structure.Fields.size());
+
+		status = 1; // In searching
+		for (std::uint32_t i = 0; i < fieldCount; ++i) {
+			const Type type = structure.Fields[i].Type;
+			if (!type.IsStructure()) continue;
+
+			const bool hasCycle = FindCycle(visited, m_Modules[type->Module].get(),
+				static_cast<std::uint32_t>(type->Code) - static_cast<std::uint32_t>(TypeCode::Structure));
+			if (hasCycle) return true;
+		}
+
+		status = 2; // No cycle
+		return false;
+	}
+	template<typename FI>
+	void Loader<FI>::CalcSize(ModuleInfo<FI>* module) {
+		const auto structCount = module->GetStructureCount();
+		for (std::uint32_t i = 0; i < structCount; ++i) {
+			module->GetStructure(i).Type.Size = CalcSize(module, i);
+		}
+	}
+	template<typename FI>
+	std::size_t Loader<FI>::CalcSize(ModuleInfo<FI>* module, std::uint32_t node) {
+		StructureInfo& structure = module->GetStructure(node);
+		std::size_t& s = structure.Type.Size;
+		if (s) return s;
+
+		const auto fieldCount = static_cast<std::uint32_t>(structure.Fields.size());
+		for (std::size_t i = 0; i < fieldCount; ++i) {
+			const Field& field = structure.Fields[i];
+			const Type type = field.Type;
+			std::size_t size = type->Size;
+			if (type.IsStructure()) {
+				size = CalcSize(m_Modules[type->Module].get(),
+					static_cast<std::uint32_t>(type->Code) - static_cast<std::uint32_t>(TypeCode::Structure));
+			}
+
+			if (field.IsArray()) {
+				s += static_cast<std::size_t>(size * field.Count + sizeof(std::uint64_t));
+			} else {
+				s += size;
+			}
+		}
+
+		s += sizeof(Type);
+		return s = Pade<void*>(s);
+	}
+	template<typename FI>
+	void Loader<FI>::CalcOffset(ModuleInfo<FI>* module) {
+		const auto structCount = module->GetStructureCount();
+		for (std::uint32_t i = 0; i < structCount; ++i) {
+			StructureInfo& structure = module->GetStructure(i);
+			const auto fieldCount = static_cast<std::uint32_t>(structure.Fields.size());
+
+			std::size_t offset = sizeof(Type);
+			for (std::uint32_t j = 0; j < fieldCount; ++j) {
+				Field& field = structure.Fields[j];
+
+				field.Offset = offset;
+				if (field.IsArray()) {
+					offset += static_cast<std::size_t>(field.Type->Size * field.Count + sizeof(ArrayObject));
+				} else {
+					offset += field.Type->Size;
+				}
 			}
 		}
 	}

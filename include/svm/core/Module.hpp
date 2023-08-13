@@ -61,9 +61,4 @@ namespace svm::core {
 	using Modules = std::vector<std::unique_ptr<ModuleInfo<FI>>>;
 }
 
-namespace svm::core {
-	template<typename FI>
-	Cycle FindCycle(const Modules<FI>& modules);
-}
-
 #include "detail/impl/Module.hpp"

@@ -1,14 +1,12 @@
 #pragma once
 
 #include <svm/Specification.hpp>
-#include <svm/Structure.hpp>
 #include <svm/Type.hpp>
 #include <svm/core/ByteFile.hpp>
 
 #include <cstddef>
 #include <cstdint>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 namespace svm::core {
@@ -57,11 +55,6 @@ namespace svm::core {
 		void ParseFunctions();
 		Instructions ParseInstructions();
 
-		void FindCycle() const;
-		bool FindCycle(const Structures& structures, std::unordered_map<std::uint32_t, int>& visited, std::vector<Structure>& cycle, std::uint32_t node) const;
-		void CalcSize();
-		std::size_t CalcSize(Structures& structures, std::uint32_t node);
-		void CalcOffset();
 		OpCode ReadOpCode() noexcept;
 	};
 }
