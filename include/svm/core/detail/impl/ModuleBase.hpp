@@ -90,4 +90,10 @@ namespace svm::core {
 			structure.Type.Module = module;
 		}
 	}
+	template<typename F>
+	void ModuleBase<F>::UpdateFunctionInfos(std::uint32_t module) noexcept {
+		for (auto& function : m_Functions) {
+			function.Module = module;
+		}
+	}
 }

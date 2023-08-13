@@ -53,6 +53,7 @@ namespace svm::core {
 		void SetMappings(Mappings&& newMappings) noexcept;
 
 		void UpdateStructureInfos(std::uint32_t module) noexcept;
+		void UpdateFunctionInfos(std::uint32_t module) noexcept;
 	};
 }
 

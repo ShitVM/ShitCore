@@ -61,6 +61,7 @@ namespace svm::core {
 		const auto index = static_cast<std::uint32_t>(std::distance(m_Modules.begin(), moduleIter));
 
 		module.UpdateStructureInfos(index);
+		module.UpdateFunctionInfos(index);
 
 		LoadDependencies(moduleIter->get());
 	}

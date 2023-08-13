@@ -38,8 +38,6 @@ namespace svm::core {
 		const Instructions& GetEntrypoint() const noexcept;
 		Instructions& GetEntrypoint() noexcept;
 		void SetEntrypoint(Instructions&& newEntrypoint) noexcept;
-
-		void UpdateFunctionInfos(std::uint32_t module) noexcept;
 	};
 
 	std::ostream& operator<<(std::ostream& stream, const ByteFile& byteFile);

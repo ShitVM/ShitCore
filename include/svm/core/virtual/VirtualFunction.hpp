@@ -10,6 +10,9 @@
 
 namespace svm::core {
 	class VirtualFunctionInfo {
+	public:
+		std::uint32_t Module = 0;
+
 	private:
 		std::string m_Name;
 		std::uint16_t m_Arity = 0;

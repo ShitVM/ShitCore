@@ -51,12 +51,6 @@ namespace svm::core {
 		m_Entrypoint = std::move(newEntrypoint);
 	}
 
-	void ByteFile::UpdateFunctionInfos(std::uint32_t module) noexcept {
-		for (FunctionInfo& function : GetFunctions()) {
-			function.Module = module;
-		}
-	}
-
 	std::ostream& operator<<(std::ostream& stream, const ByteFile& byteFile) {
 		const std::string defIndent = detail::MakeIndent(stream);
 		const std::string indentOnce(4, ' ');
