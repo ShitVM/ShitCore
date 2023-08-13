@@ -155,7 +155,7 @@ namespace svm::core {
 
 		m_ByteFile.SetStructures(std::move(structures));
 
-		if (structCount >= 2) {
+		if (structCount >= 2) { // TODO
 			FindCycle();
 		}
 		CalcSize();

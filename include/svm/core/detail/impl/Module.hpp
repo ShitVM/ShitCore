@@ -70,6 +70,13 @@ namespace svm::core {
 		return *iter;
 	}
 	template<typename FI>
+	StructureInfo& ModuleInfo<FI>::GetStructure(std::uint32_t index) noexcept {
+		assert(!IsEmpty());
+
+		if (IsByteFile()) return std::get<ByteFile>(Module).GetStructures()[index];
+		else return std::get<VirtualModule<FI>>(Module).GetStructures()[index];
+	}
+	template<typename FI>
 	std::uint32_t ModuleInfo<FI>::GetStructureCount() const noexcept {
 		assert(!IsEmpty());
 

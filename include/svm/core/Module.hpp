@@ -17,7 +17,6 @@ namespace svm::core {
 	class ModuleInfo final {
 	public:
 		std::variant<std::monostate, ByteFile, VirtualModule<FI>> Module;
-		bool IsDependenciesLoaded = false;
 
 	public:
 		ModuleInfo() noexcept = default;
@@ -40,6 +39,7 @@ namespace svm::core {
 		const std::vector<std::string>& GetDependencies() const noexcept;
 		Structure GetStructure(std::uint32_t index) const noexcept;
 		Structure GetStructure(const std::string& name) const noexcept;
+		StructureInfo& GetStructure(std::uint32_t index) noexcept;
 		std::uint32_t GetStructureCount() const noexcept;
 		std::variant<Function, VirtualFunction<FI>> GetFunction(std::uint32_t index) const noexcept;
 		std::variant<Function, VirtualFunction<FI>> GetFunction(const std::string& name) const noexcept;

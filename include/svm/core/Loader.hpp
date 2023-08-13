@@ -27,7 +27,6 @@ namespace svm::core {
 
 		Module<FI> Load(const std::string& path);
 		VirtualModule<FI>& Create(const std::string& virtualPath);
-		void LoadDependencies(Module<FI> module);
 
 		Module<FI> GetModule(std::uint32_t index) const noexcept;
 		Module<FI> GetModule(const std::string& path) const noexcept;
@@ -35,6 +34,11 @@ namespace svm::core {
 		const Modules<FI>& GetModules() const noexcept;
 		Modules<FI>& GetModules() noexcept;
 		void SetModules(Modules<FI>&& newModules) noexcept;
+
+	private:
+		void LoadDependencies(ModuleInfo<FI>* module);
+
+		ModuleInfo<FI>* GetModule(const std::string& path) noexcept;
 	};
 }
 
