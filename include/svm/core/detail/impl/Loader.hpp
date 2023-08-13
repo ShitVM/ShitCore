@@ -50,12 +50,14 @@ namespace svm::core {
 	}
 	template<typename FI>
 	void Loader<FI>::LoadDependencies(Module<FI> module) {
+		if (module->IsDependenciesLoaded) return;
+
 		for (const auto& dependency : module->GetDependencies()) {
-			if (GetModule(dependency) != nullptr) continue; // TODO: 무조건 의존성을 불러오도록 변경
+			if (GetModule(dependency) != nullptr) continue;
 
 			const auto path = svm::detail::fs::u8path(module->GetPath()).parent_path() / dependency;
 
-			LoadDependencies(Load(path.generic_string()));
+			Load(path.generic_string());
 		}
 
 		const auto structCount = module->GetStructureCount();
@@ -64,6 +66,12 @@ namespace svm::core {
 				const auto target = GetModule(module->GetDependencies()[field.Type->Module - 1]);
 				field.Type = target->GetStructure(field.Type->Name)->Type;
 			}
+		}
+
+		module->IsDependenciesLoaded = true;
+
+		for (const auto& dependency : module->GetDependencies()) {
+			LoadDependencies(GetModule(dependency));
 		}
 	}
 

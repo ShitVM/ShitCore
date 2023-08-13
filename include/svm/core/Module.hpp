@@ -17,6 +17,7 @@ namespace svm::core {
 	class ModuleInfo final {
 	public:
 		std::variant<std::monostate, ByteFile, VirtualModule<FI>> Module;
+		bool IsDependenciesLoaded = false;
 
 	public:
 		ModuleInfo() noexcept = default;
