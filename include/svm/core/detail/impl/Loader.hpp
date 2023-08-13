@@ -95,14 +95,14 @@ namespace svm::core {
 		for (std::uint32_t i = 0; i < structCount; ++i) {
 			for (auto& field : module->GetStructure(i).Fields) {
 				const auto dependency = module->GetDependencies()[field.Type->Module - 1];
-				const auto target = GetModule(dependency);
+				const auto target = GetModuleInternal(dependency);
 				field.Type = target->GetStructure(field.Type->Name)->Type;
 			}
 		}
 	}
 
 	template<typename FI>
-	ModuleInfo<FI>* Loader<FI>::GetModule(const std::string& path) noexcept {
+	ModuleInfo<FI>* Loader<FI>::GetModuleInternal(const std::string& path) noexcept {
 		const std::string absPath = svm::detail::GetAbsolutePath(path);
 		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [absPath](const auto& module) {
 			return module->GetPath() == absPath;

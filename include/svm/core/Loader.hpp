@@ -38,7 +38,7 @@ namespace svm::core {
 	private:
 		void LoadDependencies(ModuleInfo<FI>* module);
 
-		ModuleInfo<FI>* GetModule(const std::string& path) noexcept;
+		ModuleInfo<FI>* GetModuleInternal(const std::string& path) noexcept;
 	};
 }
 
