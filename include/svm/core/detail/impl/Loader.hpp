@@ -105,7 +105,7 @@ namespace svm::core {
 		if (dependency[0] == '/') return dependency;
 
 		if (std::holds_alternative<std::filesystem::path>(module->GetPath())) {
-			return std::filesystem::canonical(
+			return std::filesystem::weakly_canonical(
 				std::get<std::filesystem::path>(module->GetPath()).parent_path()
 				/ std::filesystem::u8path(dependency));
 		} else if (std::holds_alternative<std::string>(module->GetPath())) {
