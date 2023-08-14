@@ -45,12 +45,17 @@ namespace svm::core {
 		return *result;
 	}
 	template<typename FI>
-	VirtualModule<FI>& Loader<FI>::Create(std::string virtualPath) {
-		assert(virtualPath.size() >= 2);
-		assert(virtualPath[0] == '/');
+	VirtualModule<FI>& Loader<FI>::Create(std::filesystem::path path) {
+		 return std::get<VirtualModule<FI>>(
+			 m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(VirtualModule<FI>(std::move(path))))->Module);
+	}
+	template<typename FI>
+	VirtualModule<FI>& Loader<FI>::Create(std::string path) {
+		assert(path.size() >= 2);
+		assert(path[0] == '/');
 
 		return std::get<VirtualModule<FI>>(
-			m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(VirtualModule<FI>(std::move(virtualPath))))->Module);
+			m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(VirtualModule<FI>(std::move(path))))->Module);
 	}
 	template<typename FI>
 	void Loader<FI>::Build(VirtualModule<FI>& module) {
