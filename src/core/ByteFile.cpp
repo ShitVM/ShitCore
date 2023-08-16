@@ -55,9 +55,19 @@ namespace svm::core {
 		const std::string defIndent = detail::MakeIndent(stream);
 		const std::string indentOnce(4, ' ');
 
+		const auto& dependencies = byteFile.GetDependencies();
+		const auto dependencyCount = static_cast<std::uint32_t>(dependencies.size());
+
 		stream << defIndent << "ByteFile:\n"
 			   << defIndent << indentOnce << "Path: \"" << byteFile.GetPath() << "\"\n"
-			   << Indent << byteFile.GetConstantPool() << '\n'
+			   << defIndent << indentOnce << "Dependencies: " << dependencyCount;
+		
+		for (std::uint32_t i = 0; i < dependencyCount; ++i) {
+			stream << defIndent << indentOnce << indentOnce << "\n[" << i << "]: \"" << dependencies[i] << ']';
+		}
+
+		stream << Indent << byteFile.GetMappings() << '\n'
+						 << byteFile.GetConstantPool() << '\n'
 						 << byteFile.GetStructures() << '\n'
 						 << byteFile.GetFunctions() << '\n' << UnIndent
 			   << defIndent << indentOnce << "Entrypoint:\n"

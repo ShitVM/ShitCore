@@ -1,6 +1,18 @@
 #include <svm/Mapping.hpp>
 
+#include <svm/IO.hpp>
+
 #include <utility>
+
+namespace svm {
+	std::ostream& operator<<(std::ostream& stream, const Mapping& mapping) {
+		const std::string defIndent = detail::MakeIndent(stream);
+
+		stream << defIndent << "Module: [" << mapping.Module << "]\n"
+			   << defIndent << "Name: \"" << mapping.Name << '"';
+		return stream;
+	}
+}
 
 namespace svm {
 	Mappings::Mappings(std::vector<StructureMapping> structures, std::vector<FunctionMapping> functions) noexcept
@@ -40,5 +52,33 @@ namespace svm {
 	}
 	std::uint32_t Mappings::GetFunctionMappingCount() const noexcept {
 		return static_cast<std::uint32_t>(m_FunctionMappings.size());
+	}
+
+	std::ostream& operator<<(std::ostream& stream, const Mappings& mappings) {
+		const std::string defIndent = detail::MakeIndent(stream);
+		const std::string indentOnce(4, ' ');
+
+		const std::uint32_t structureMappingCount = mappings.GetStructureMappingCount();
+		const std::uint64_t functionMappingCount = mappings.GetFunctionMappingCount();
+
+		stream << defIndent << "Mappings:\n"
+			   << defIndent << indentOnce << "Structures: " << structureMappingCount
+			   << Indent << Indent;
+
+		for (std::uint32_t i = 0; i < structureMappingCount; ++i) {
+			const Mapping& mapping = mappings.GetStructureMapping(i);
+			stream << "\n[" << i << "]: " << mapping;
+		}
+
+		stream << defIndent << "Mappings:\n"
+			   << defIndent << indentOnce << "Functions: " << functionMappingCount;
+
+		for (std::uint32_t i = 0; i < functionMappingCount; ++i) {
+			const Mapping& mapping = mappings.GetFunctionMapping(i);
+			stream << "\n[" << i << "]: " << mapping;
+		}
+
+		stream << UnIndent << UnIndent;
+		return stream;
 	}
 }

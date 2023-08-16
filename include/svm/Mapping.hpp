@@ -3,6 +3,7 @@
 #include <svm/Type.hpp>
 
 #include <cstdint>
+#include <ostream>
 #include <string>
 #include <vector>
 
@@ -11,6 +12,8 @@ namespace svm {
 		std::uint32_t Module;
 		std::string Name;
 	};
+
+	std::ostream& operator<<(std::ostream& stream, const Mapping& mapping);
 
 	struct StructureMapping final : Mapping {
 		TypeInfo TempType;
@@ -47,4 +50,6 @@ namespace svm {
 		const FunctionMapping& GetFunctionMapping(std::uint32_t index) const noexcept;
 		std::uint32_t GetFunctionMappingCount() const noexcept;
 	};
+
+	std::ostream& operator<<(std::ostream& stream, const Mappings& mappings);
 }
