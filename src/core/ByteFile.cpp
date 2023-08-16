@@ -63,13 +63,13 @@ namespace svm::core {
 			   << defIndent << indentOnce << "Dependencies: " << dependencyCount;
 		
 		for (std::uint32_t i = 0; i < dependencyCount; ++i) {
-			stream << defIndent << indentOnce << indentOnce << "\n[" << i << "]: \"" << dependencies[i] << ']';
+			stream << '\n' << defIndent << indentOnce << indentOnce << '[' << i << "]: \"" << dependencies[i] << '"';
 		}
 
-		stream << Indent << byteFile.GetMappings() << '\n'
-						 << byteFile.GetConstantPool() << '\n'
-						 << byteFile.GetStructures() << '\n'
-						 << byteFile.GetFunctions() << '\n' << UnIndent
+		stream << '\n' << Indent << byteFile.GetMappings() << '\n'
+								 << byteFile.GetConstantPool() << '\n'
+								 << byteFile.GetStructures() << '\n'
+								 << byteFile.GetFunctions() << '\n' << UnIndent
 			   << defIndent << indentOnce << "Entrypoint:\n"
 			   << Indent << Indent << byteFile.GetEntrypoint() << UnIndent << UnIndent;
 		return stream;

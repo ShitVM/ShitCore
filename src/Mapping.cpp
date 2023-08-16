@@ -63,22 +63,21 @@ namespace svm {
 
 		stream << defIndent << "Mappings:\n"
 			   << defIndent << indentOnce << "Structures: " << structureMappingCount
-			   << Indent << Indent;
+			   << Indent << Indent << Indent;
 
 		for (std::uint32_t i = 0; i < structureMappingCount; ++i) {
 			const Mapping& mapping = mappings.GetStructureMapping(i);
-			stream << "\n[" << i << "]: " << mapping;
+			stream << '\n' << defIndent << indentOnce << indentOnce << '[' << i << "]:\n" << mapping;
 		}
 
-		stream << defIndent << "Mappings:\n"
-			   << defIndent << indentOnce << "Functions: " << functionMappingCount;
+		stream << '\n' << defIndent << indentOnce << "Functions: " << functionMappingCount;
 
 		for (std::uint32_t i = 0; i < functionMappingCount; ++i) {
 			const Mapping& mapping = mappings.GetFunctionMapping(i);
-			stream << "\n[" << i << "]: " << mapping;
+			stream << '\n' << defIndent << indentOnce << indentOnce << '[' << i << "]:\n" << mapping;
 		}
 
-		stream << UnIndent << UnIndent;
+		stream << UnIndent << UnIndent << UnIndent;
 		return stream;
 	}
 }
