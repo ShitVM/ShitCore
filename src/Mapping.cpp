@@ -7,9 +7,11 @@
 namespace svm {
 	std::ostream& operator<<(std::ostream& stream, const Mapping& mapping) {
 		const std::string defIndent = detail::MakeIndent(stream);
+		const std::string indentOnce(4, ' ');
 
-		stream << defIndent << "Module: [" << mapping.Module << "]\n"
-			   << defIndent << "Name: \"" << mapping.Name << '"';
+		stream << defIndent << "Mapping:\n"
+			   << defIndent << indentOnce << "Module: [" << mapping.Module << "]\n"
+			   << defIndent << indentOnce << "Name: \"" << mapping.Name << '"';
 		return stream;
 	}
 }
