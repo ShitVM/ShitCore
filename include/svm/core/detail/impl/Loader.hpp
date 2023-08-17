@@ -136,6 +136,9 @@ namespace svm::core {
 		for (const auto& dependency : module->GetDependencies()) {
 			const auto path = ResolveDependency(*module, dependency);
 			if (GetModuleInternal(path) != nullptr) continue;
+			else if (std::holds_alternative<std::string>(path)) {
+				throw std::runtime_error("Failed to load the file. Unknown dependency.");
+			}
 
 			Load(std::get<std::filesystem::path>(path));
 		}
