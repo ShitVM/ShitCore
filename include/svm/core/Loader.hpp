@@ -8,12 +8,14 @@
 #include <filesystem>
 #include <string>
 #include <unordered_map>
+#include <vector>
 
 namespace svm::core {
 	template<typename FI>
 	class Loader {
 	private:
 		Modules<FI> m_Modules;
+		std::vector<std::filesystem::path> m_LibraryDirectories;
 
 	public:
 		Loader() noexcept = default;
@@ -28,9 +30,11 @@ namespace svm::core {
 	public:
 		void Clear() noexcept;
 
+		void AddLibraryDirectory(const std::filesystem::path& path);
+
 		Module<FI> Load(const std::filesystem::path& path);
-		VirtualModule<FI>& Create(std::filesystem::path path);
-		VirtualModule<FI>& Create(std::string path);
+		VirtualModule<FI>& Create(const std::filesystem::path& path);
+		VirtualModule<FI>& Create(const std::string& path);
 		void Build(VirtualModule<FI>& module);
 
 		Module<FI> GetModule(std::uint32_t index) const noexcept;

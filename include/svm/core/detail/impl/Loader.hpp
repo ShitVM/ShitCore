@@ -30,6 +30,11 @@ namespace svm::core {
 	}
 
 	template<typename FI>
+	void Loader<FI>::AddLibraryDirectory(const std::filesystem::path& path) {
+		m_LibraryDirectories.push_back(std::filesystem::canonical(path));
+	}
+
+	template<typename FI>
 	Module<FI> Loader<FI>::Load(const std::filesystem::path& path) {
 		Parser parser;
 		parser.Open(path);
@@ -45,17 +50,18 @@ namespace svm::core {
 		return *result;
 	}
 	template<typename FI>
-	VirtualModule<FI>& Loader<FI>::Create(std::filesystem::path path) {
-		 return std::get<VirtualModule<FI>>(
-			 m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(VirtualModule<FI>(std::move(path))))->Module);
+	VirtualModule<FI>& Loader<FI>::Create(const std::filesystem::path& path) {
+		 return std::get<VirtualModule<FI>>(m_Modules.emplace_back(
+			 std::make_unique<ModuleInfo<FI>>(VirtualModule<FI>(std::filesystem::weakly_canonical(path))))->Module);
 	}
 	template<typename FI>
-	VirtualModule<FI>& Loader<FI>::Create(std::string path) {
+	VirtualModule<FI>& Loader<FI>::Create(const std::string& path) {
 		assert(path.size() >= 2);
 		assert(path[0] == '/');
 
-		return std::get<VirtualModule<FI>>(
-			m_Modules.emplace_back(std::make_unique<ModuleInfo<FI>>(VirtualModule<FI>(std::move(path))))->Module);
+		return std::get<VirtualModule<FI>>(m_Modules.emplace_back(
+			std::make_unique<ModuleInfo<FI>>(VirtualModule<FI>(
+				std::filesystem::weakly_canonical(std::filesystem::u8path(path)).generic_string())))->Module);
 	}
 	template<typename FI>
 	void Loader<FI>::Build(VirtualModule<FI>& module) {
@@ -77,11 +83,8 @@ namespace svm::core {
 	}
 	template<typename FI>
 	Module<FI> Loader<FI>::GetModule(const ModulePath& path) const noexcept {
-		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [path](const auto& module) {
-			return module->GetPath() == path;
-		});
-		if (iter == m_Modules.end()) return nullptr;
-		else return **iter;
+		if (const auto module = GetModuleInternal(path); module) return *module;
+		else return nullptr;
 	}
 	template<typename FI>
 	std::uint32_t Loader<FI>::GetModuleCount() const noexcept {
@@ -102,16 +105,28 @@ namespace svm::core {
 
 	template<typename FI>
 	ModulePath Loader<FI>::ResolveDependency(Module<FI> module, const std::string& dependency) const {
-		if (dependency[0] == '/') return dependency;
+		if (dependency[0] == '/') {
+			const auto dependencyPath = std::filesystem::u8path(dependency.substr(1));
+			for (const auto& directory : m_LibraryDirectories) {
+				const auto path = directory / dependencyPath;
+				if (!std::filesystem::exists(path)) continue;
 
-		if (std::holds_alternative<std::filesystem::path>(module->GetPath())) {
+				return std::filesystem::weakly_canonical(path);
+			}
+
 			return std::filesystem::weakly_canonical(
-				std::get<std::filesystem::path>(module->GetPath()).parent_path()
-				/ std::filesystem::u8path(dependency));
-		} else if (std::holds_alternative<std::string>(module->GetPath())) {
-			return std::filesystem::weakly_canonical(
-				std::filesystem::u8path(std::get<std::string>(module->GetPath())).parent_path()
-				/ std::filesystem::u8path(dependency)).generic_u8string();
+				std::filesystem::u8path(dependency)).generic_string();
+		} else {
+			const auto& modulePath = module->GetPath();
+			const auto dependencyPath = std::filesystem::u8path(dependency);
+			if (std::holds_alternative<std::filesystem::path>(modulePath)) {
+				return std::filesystem::weakly_canonical(
+					std::get<std::filesystem::path>(modulePath).parent_path() / dependencyPath);
+			} else {
+				return std::filesystem::weakly_canonical(
+					std::filesystem::u8path(std::get<std::string>(modulePath)).parent_path()
+					/ std::filesystem::u8path(dependency)).generic_u8string();
+			}
 		}
 	}
 
