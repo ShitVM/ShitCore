@@ -16,11 +16,12 @@
 namespace svm::core {
 	template<typename FI>
 	Loader<FI>::Loader(Loader&& loader) noexcept
-		: m_Modules(std::move(loader.m_Modules)) {}
+		: m_Modules(std::move(loader.m_Modules)), m_LibraryDirectories(std::move(loader.m_LibraryDirectories)){}
 
 	template<typename FI>
 	Loader<FI>& Loader<FI>::operator=(Loader&& loader) noexcept {
 		m_Modules = std::move(loader.m_Modules);
+		m_LibraryDirectories = std::move(loader.m_LibraryDirectories);
 		return *this;
 	}
 
@@ -241,7 +242,7 @@ namespace svm::core {
 	}
 
 	template<typename FI>
-	ModuleInfo<FI>* Loader<FI>::GetModuleInternal(const ModulePath& path) noexcept {
+	ModuleInfo<FI>* Loader<FI>::GetModuleInternal(const ModulePath& path) const noexcept {
 		const auto iter = std::find_if(m_Modules.begin(), m_Modules.end(), [path](const auto& module) {
 			return module->GetPath() == path;
 		});

@@ -56,7 +56,7 @@ namespace svm::core {
 		std::size_t CalcSize(ModuleInfo<FI>* module, std::uint32_t node);
 		void CalcOffset(ModuleInfo<FI>* module);
 
-		ModuleInfo<FI>* GetModuleInternal(const ModulePath& path) noexcept;
+		ModuleInfo<FI>* GetModuleInternal(const ModulePath& path) const noexcept;
 	};
 }
 
