@@ -19,7 +19,7 @@ namespace svm::core {
 
 	public:
 		ByteFile() noexcept = default;
-		ByteFile(std::string path, std::vector<std::string> dependencies, ConstantPool&& constantPool, Structures&& structures,
+		ByteFile(std::string path, std::vector<Dependency> dependencies, ConstantPool&& constantPool, Structures&& structures,
 			Functions&& functions, Mappings&& mappings, Instructions&& entrypoint) noexcept;
 		ByteFile(ByteFile&& byteFile) noexcept;
 		~ByteFile() = default;

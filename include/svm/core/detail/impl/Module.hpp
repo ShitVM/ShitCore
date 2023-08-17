@@ -43,11 +43,25 @@ namespace svm::core {
 		else return std::get<VirtualModule<FI>>(Module).GetPath();
 	}
 	template<typename FI>
-	const std::vector<std::string>& ModuleInfo<FI>::GetDependencies() const noexcept {
+	const Dependency& ModuleInfo<FI>::GetDependency(std::uint32_t index) const noexcept {
 		assert(!IsEmpty());
 
-		if (IsByteFile()) return std::get<ByteFile>(Module).GetDependencies();
-		else return std::get<VirtualModule<FI>>(Module).GetDependencies();
+		if (IsByteFile()) return std::get<ByteFile>(Module).GetDependencies()[index];
+		else return std::get<VirtualModule<FI>>(Module).GetDependencies()[index];
+	}
+	template<typename FI>
+	Dependency& ModuleInfo<FI>::GetDependency(std::uint32_t index) noexcept {
+		assert(!IsEmpty());
+
+		if (IsByteFile()) return std::get<ByteFile>(Module).GetDependencies()[index];
+		else return std::get<VirtualModule<FI>>(Module).GetDependencies()[index];
+	}
+	template<typename FI>
+	std::uint32_t ModuleInfo<FI>::GetDependencyCount() const noexcept {
+		assert(!IsEmpty());
+
+		if (IsByteFile()) return static_cast<std::uint32_t>(std::get<ByteFile>(Module).GetDependencies().size());
+		else return static_cast<std::uint32_t>(std::get<VirtualModule<FI>>(Module).GetDependencies().size());
 	}
 	template<typename FI>
 	Structure ModuleInfo<FI>::GetStructure(std::uint32_t index) const noexcept {

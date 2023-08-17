@@ -5,7 +5,7 @@
 #include <utility>
 
 namespace svm::core {
-	ByteFile::ByteFile(std::string path, std::vector<std::string> dependencies, ConstantPool&& constantPool, Structures&& structures,
+	ByteFile::ByteFile(std::string path, std::vector<Dependency> dependencies, ConstantPool&& constantPool, Structures&& structures,
 		Functions&& functions, Mappings&& mappings, Instructions&& entrypoint) noexcept
 		: ModuleBase<Functions>(std::move(path), std::move(dependencies), std::move(structures),
 			std::move(functions), std::move(mappings)), m_ConstantPool(std::move(constantPool)),
@@ -63,7 +63,7 @@ namespace svm::core {
 			   << defIndent << indentOnce << "Dependencies: " << dependencyCount;
 		
 		for (std::uint32_t i = 0; i < dependencyCount; ++i) {
-			stream << '\n' << defIndent << indentOnce << indentOnce << '[' << i << "]: \"" << dependencies[i] << '"';
+			stream << '\n' << defIndent << indentOnce << indentOnce << '[' << i << "]: \"" << dependencies[i].Path << '"';
 		}
 
 		stream << '\n' << Indent << byteFile.GetMappings() << '\n'

@@ -133,14 +133,17 @@ namespace svm::core {
 
 	template<typename FI>
 	void Loader<FI>::LoadDependencies(ModuleInfo<FI>* module) {
-		for (const auto& dependency : module->GetDependencies()) {
-			const auto path = ResolveDependency(*module, dependency);
-			if (GetModuleInternal(path) != nullptr) continue;
-			else if (std::holds_alternative<std::string>(path)) {
+		const std::uint32_t dependencyCount = module->GetDependencyCount();
+		for (std::uint32_t i = 0; i < dependencyCount; ++i) {
+			Dependency& dependency = module->GetDependency(i);
+			const ModulePath dependencyPath = ResolveDependency(*module, dependency.Path);
+			if (const auto dependencyModule = GetModuleInternal(dependencyPath); dependencyModule) {
+				dependency.Module = dependencyModule;
+			} else if (std::holds_alternative<std::string>(dependencyPath)) {
 				throw std::runtime_error("Failed to load the file. Unknown dependency.");
+			} else {
+				dependency.Module = Load(std::get<std::filesystem::path>(dependencyPath)).GetPointer();
 			}
-
-			Load(std::get<std::filesystem::path>(path));
 		}
 
 		const auto structCount = module->GetStructureCount();
@@ -148,9 +151,8 @@ namespace svm::core {
 			for (auto& field : module->GetStructure(i).Fields) {
 				if (field.Type->Code != TypeCode::None) continue;
 
-				const auto& dependency = module->GetDependencies()[field.Type->Module - 1];
-				const auto target = GetModuleInternal(ResolveDependency(*module, dependency));
-				field.Type = target->GetStructure(field.Type->Name)->Type;
+				const Dependency& dependency = module->GetDependency(field.Type->Module - 1);
+				field.Type = static_cast<const ModuleInfo<FI>*>(dependency.Module)->GetStructure(field.Type->Name)->Type;
 			}
 		}
 

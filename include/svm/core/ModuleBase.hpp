@@ -6,8 +6,16 @@
 #include <filesystem>
 #include <ostream>
 #include <string>
+#include <utility>
 #include <variant>
 #include <vector>
+
+namespace svm::core {
+	struct Dependency final {
+		std::string Path;
+		const void* Module = nullptr;
+	};
+}
 
 namespace svm::core {
 	using ModulePath = std::variant<std::filesystem::path, std::string>;
@@ -18,7 +26,7 @@ namespace svm::core {
 	class ModuleBase {
 	private:
 		ModulePath m_Path;
-		std::vector<std::string> m_Dependencies;
+		std::vector<Dependency> m_Dependencies;
 		Structures m_Structures;
 		F m_Functions;
 		Mappings m_Mappings;
@@ -26,7 +34,7 @@ namespace svm::core {
 	public:
 		ModuleBase() noexcept = default;
 		explicit ModuleBase(ModulePath path) noexcept;
-		ModuleBase(ModulePath path, std::vector<std::string> dependencies, Structures&& structures,
+		ModuleBase(ModulePath path, std::vector<Dependency> dependencies, Structures&& structures,
 			F&& functions, Mappings&& mappings) noexcept;
 		ModuleBase(ModuleBase&& module) noexcept;
 		~ModuleBase() = default;
@@ -39,9 +47,9 @@ namespace svm::core {
 	public:
 		const ModulePath& GetPath() const noexcept;
 		void SetPath(ModulePath newPath) noexcept;
-		const std::vector<std::string>& GetDependencies() const noexcept;
-		std::vector<std::string>& GetDependencies() noexcept;
-		void SetDependencies(std::vector<std::string> newDependencies) noexcept;
+		const std::vector<Dependency>& GetDependencies() const noexcept;
+		std::vector<Dependency>& GetDependencies() noexcept;
+		void SetDependencies(std::vector<Dependency> newDependencies) noexcept;
 		const Structures& GetStructures() const noexcept;
 		Structures& GetStructures() noexcept;
 		void SetStructures(Structures&& newStructures) noexcept;

@@ -2,6 +2,7 @@
 
 #include <svm/Structure.hpp>
 #include <svm/core/ByteFile.hpp>
+#include <svm/core/ModuleBase.hpp>
 #include <svm/core/virtual/VirtualModule.hpp>
 #include <svm/detail/ReferenceWrapper.hpp>
 
@@ -36,7 +37,9 @@ namespace svm::core {
 		bool IsVirtualModule() const noexcept;
 
 		const ModulePath& GetPath() const noexcept;
-		const std::vector<std::string>& GetDependencies() const noexcept;
+		const Dependency& GetDependency(std::uint32_t index) const noexcept;
+		Dependency& GetDependency(std::uint32_t index) noexcept;
+		std::uint32_t GetDependencyCount() const noexcept;
 		Structure GetStructure(std::uint32_t index) const noexcept;
 		Structure GetStructure(const std::string& name) const noexcept;
 		StructureInfo& GetStructure(std::uint32_t index) noexcept;

@@ -89,9 +89,9 @@ namespace svm::core {
 
 	void Parser::ParseDependencies() {
 		const auto depenCount = ReadFile<std::uint32_t>();
-		std::vector<std::string> dependencies;
+		std::vector<Dependency> dependencies;
 		for (std::uint32_t i = 0; i < depenCount; ++i) {
-			dependencies.push_back(ReadFileString());
+			dependencies.push_back({ ReadFileString() });
 		}
 
 		m_ByteFile.SetDependencies(std::move(dependencies));
