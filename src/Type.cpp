@@ -44,6 +44,7 @@ namespace svm {
 		static const TypeInfo s_NoneType("none", TypeCode::None, 0);
 		static const TypeInfo s_IntType("int", TypeCode::Int, sizeof(IntObject));
 		static const TypeInfo s_LongType("long", TypeCode::Long, sizeof(LongObject));
+		static const TypeInfo s_SingleType("single", TypeCode::Single, sizeof(SingleObject));
 		static const TypeInfo s_DoubleType("double", TypeCode::Double, sizeof(DoubleObject));
 		static const TypeInfo s_PointerType("pointer", TypeCode::Pointer, sizeof(PointerObject));
 		static const TypeInfo s_GCPointerType("gcpointer", TypeCode::GCPointer, sizeof(GCPointerObject));
@@ -53,6 +54,7 @@ namespace svm {
 	const Type NoneType = s_NoneType;
 	const Type IntType = s_IntType;
 	const Type LongType = s_LongType;
+	const Type SingleType = s_SingleType;
 	const Type DoubleType = s_DoubleType;
 	const Type PointerType = s_PointerType;
 	const Type GCPointerType = s_GCPointerType;
@@ -62,6 +64,7 @@ namespace svm {
 		switch (code) {
 		case TypeCode::Int: return IntType;
 		case TypeCode::Long: return LongType;
+		case TypeCode::Single: return SingleType;
 		case TypeCode::Double: return DoubleType;
 		case TypeCode::Pointer: return PointerType;
 		case TypeCode::GCPointer: return GCPointerType;

@@ -72,6 +72,26 @@ namespace svm {
 		inline T Cast() const noexcept;
 	};
 
+	class SingleObject final : public Object {
+	public:
+		float Value = 0.0f;
+
+	public:
+		SingleObject() noexcept;
+		SingleObject(float value) noexcept;
+		SingleObject(const SingleObject& object) noexcept;
+		~SingleObject() = default;
+
+	public:
+		SingleObject& operator=(const SingleObject& object) noexcept;
+		bool operator==(const SingleObject&) = delete;
+		bool operator!=(const SingleObject&) = delete;
+
+	public:
+		template<typename T>
+		inline T Cast() const noexcept;
+	};
+
 	class DoubleObject final : public Object {
 	public:
 		double Value = 0.0;

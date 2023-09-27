@@ -14,7 +14,7 @@ namespace svm {
 		Short,				// Not supported
 		Int,
 		Long,
-		Float,				// Not supported
+		Single,
 		Double,
 		Pointer,
 		GCPointer,
@@ -59,6 +59,7 @@ namespace svm {
 	extern const Type NoneType;
 	extern const Type IntType;
 	extern const Type LongType;
+	extern const Type SingleType;
 	extern const Type DoubleType;
 	extern const Type PointerType;
 	extern const Type GCPointerType;

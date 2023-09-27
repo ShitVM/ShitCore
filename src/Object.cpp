@@ -48,6 +48,20 @@ namespace svm {
 		return *this;
 	}
 
+	SingleObject::SingleObject() noexcept
+		: Object(SingleType) {}
+	SingleObject::SingleObject(float value) noexcept
+		: Object(SingleType), Value(value) {}
+	SingleObject::SingleObject(const SingleObject& object) noexcept
+		: Object(object), Value(object.Value) {}
+
+	SingleObject& SingleObject::operator=(const SingleObject& object) noexcept {
+		Object::operator=(object);
+
+		Value = object.Value;
+		return *this;
+	}
+
 	DoubleObject::DoubleObject() noexcept
 		: Object(DoubleType) {}
 	DoubleObject::DoubleObject(double value) noexcept
