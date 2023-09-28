@@ -4,20 +4,6 @@
 #include <ios>
 
 namespace svm::core {
-	Parser::Parser(Parser&& parser) noexcept
-		: m_File(std::move(parser.m_File)), m_Cursor(parser.m_Cursor),
-		m_ByteFile(std::move(parser.m_ByteFile)), m_ShitBFVersion(parser.m_ShitBFVersion), m_ShitBCVersion(parser.m_ShitBCVersion) {}
-
-	Parser& Parser::operator=(Parser&& parser) noexcept {
-		m_File = std::move(parser.m_File);
-		m_Cursor = parser.m_Cursor;
-
-		m_ByteFile = std::move(parser.m_ByteFile);
-		m_ShitBFVersion = parser.m_ShitBFVersion;
-		m_ShitBCVersion = parser.m_ShitBCVersion;
-		return *this;
-	}
-
 	void Parser::Clear() noexcept {
 		m_File.clear();
 		m_Cursor = 0;
@@ -121,11 +107,21 @@ namespace svm::core {
 		std::vector<LongObject> longPool(longCount);
 		ParseConstants(longPool);
 
+		std::vector<SingleObject> singlePool;
+
+		if (m_ShitBFVersion >= ShitBFVersion::v0_5_0) {
+			const auto singleCount = ReadFile<std::uint32_t>();
+
+			singlePool.resize(singleCount);
+			ParseConstants(singlePool);
+		}
+
 		const auto doubleCount = ReadFile<std::uint32_t>();
 		std::vector<DoubleObject> doublePool(doubleCount);
 		ParseConstants(doublePool);
 
-		m_ByteFile.SetConstantPool({ std::move(intPool), std::move(longPool), std::move(doublePool) });
+		m_ByteFile.SetConstantPool({ std::move(intPool), std::move(longPool),
+			std::move(singlePool), std::move(doublePool) });
 	}
 	void Parser::ParseStructures() {
 		const auto structCount = ReadFile<std::uint32_t>();

@@ -23,11 +23,11 @@ namespace svm::core {
 
 	public:
 		Parser() noexcept = default;
-		Parser(Parser&& parser) noexcept;
+		Parser(Parser&& parser) noexcept = default;
 		~Parser() = default;
 
 	public:
-		Parser& operator=(Parser&& parser) noexcept;
+		Parser& operator=(Parser&& parser) noexcept = default;
 		bool operator==(const Parser&) = delete;
 		bool operator!=(const Parser&) = delete;
 

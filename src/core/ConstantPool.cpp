@@ -9,21 +9,15 @@
 #include <utility>
 
 namespace svm::core {
-	ConstantPool::ConstantPool(std::vector<IntObject> intPool, std::vector<LongObject> longPool, std::vector<DoubleObject> doublePool) noexcept
-		: m_IntPool(std::move(intPool)), m_LongPool(std::move(longPool)), m_DoublePool(std::move(doublePool)) {}
-	ConstantPool::ConstantPool(ConstantPool&& constantPool) noexcept
-		: m_IntPool(std::move(constantPool.m_IntPool)), m_LongPool(std::move(constantPool.m_LongPool)), m_DoublePool(std::move(constantPool.m_DoublePool)) {}
-
-	ConstantPool& ConstantPool::operator=(ConstantPool&& constantPool) noexcept {
-		m_IntPool = std::move(constantPool.m_IntPool);
-		m_LongPool = std::move(constantPool.m_LongPool);
-		m_DoublePool = std::move(constantPool.m_DoublePool);
-		return *this;
-	}
+	ConstantPool::ConstantPool(std::vector<IntObject> intPool, std::vector<LongObject> longPool,
+		std::vector<SingleObject> singlePool, std::vector<DoubleObject> doublePool) noexcept
+		: m_IntPool(std::move(intPool)), m_LongPool(std::move(longPool)),
+		m_SinglePool(std::move(singlePool)), m_DoublePool(std::move(doublePool)) {}
 
 	void ConstantPool::Clear() noexcept {
 		m_IntPool.clear();
 		m_LongPool.clear();
+		m_SinglePool.clear();
 		m_DoublePool.clear();
 	}
 
@@ -40,17 +34,23 @@ namespace svm::core {
 	std::uint32_t ConstantPool::GetLongOffset() const noexcept {
 		return GetIntOffset() + GetIntCount();
 	}
-	std::uint32_t ConstantPool::GetDoubleOffset() const noexcept {
+	std::uint32_t ConstantPool::GetSingleOffset() const noexcept {
 		return GetLongOffset() + GetLongCount();
 	}
+	std::uint32_t ConstantPool::GetDoubleOffset() const noexcept {
+		return GetSingleOffset() + GetSingleCount();
+	}
 	std::uint32_t ConstantPool::GetAllCount() const noexcept {
-		return GetIntCount() + GetLongCount() + GetDoubleCount();
+		return GetIntCount() + GetLongCount() + GetSingleCount() + GetDoubleCount();
 	}
 	std::uint32_t ConstantPool::GetIntCount() const noexcept {
 		return static_cast<std::uint32_t>(m_IntPool.size());
 	}
 	std::uint32_t ConstantPool::GetLongCount() const noexcept {
 		return static_cast<std::uint32_t>(m_LongPool.size());
+	}
+	std::uint32_t ConstantPool::GetSingleCount() const noexcept {
+		return static_cast<std::uint32_t>(m_SinglePool.size());
 	}
 	std::uint32_t ConstantPool::GetDoubleCount() const noexcept {
 		return static_cast<std::uint32_t>(m_DoublePool.size());
@@ -63,6 +63,10 @@ namespace svm::core {
 	std::uint32_t ConstantPool::AddLongConstant(std::uint64_t value) {
 		m_LongPool.push_back(value);
 		return GetLongCount() - 1;
+	}
+	std::uint32_t ConstantPool::AddSingleConstant(float value) {
+		m_SinglePool.push_back(value);
+		return GetSingleCount() - 1;
 	}
 	std::uint32_t ConstantPool::AddDoubleConstant(double value) {
 		m_DoublePool.push_back(value);
@@ -81,6 +85,13 @@ namespace svm::core {
 		});
 		if (iter == m_LongPool.end()) return NPos;
 		else return static_cast<std::uint32_t>(std::distance(m_LongPool.begin(), iter));
+	}
+	std::uint32_t ConstantPool::FindSingleConstant(float value) const noexcept {
+		const auto iter = std::find_if(m_SinglePool.begin(), m_SinglePool.end(), [value](const auto& object) {
+			return object.Value == value;
+		});
+		if (iter == m_SinglePool.end()) return NPos;
+		else return static_cast<std::uint32_t>(std::distance(m_SinglePool.begin(), iter));
 	}
 	std::uint32_t ConstantPool::FindDoubleConstant(double value) const noexcept {
 		const auto iter = std::find_if(m_DoublePool.begin(), m_DoublePool.end(), [value](const auto& object) {
@@ -101,6 +112,12 @@ namespace svm::core {
 	}
 	void ConstantPool::SetLongPool(std::vector<LongObject> newLongPool) noexcept {
 		m_LongPool = std::move(newLongPool);
+	}
+	const std::vector<SingleObject>& ConstantPool::GetSinglePool() const noexcept {
+		return m_SinglePool;
+	}
+	void ConstantPool::SetSinglePool(std::vector<SingleObject> newSinglePool) noexcept {
+		m_SinglePool = std::move(newSinglePool);
 	}
 	const std::vector<DoubleObject>& ConstantPool::GetDoublePool() const noexcept {
 		return m_DoublePool;
@@ -126,6 +143,7 @@ namespace svm::core {
 		static constexpr std::uint32_t((ConstantPool::*types[])() const noexcept) = {
 			&ConstantPool::GetIntCount,
 			&ConstantPool::GetLongCount,
+			&ConstantPool::GetSingleCount,
 			&ConstantPool::GetDoubleCount,
 		};
 
@@ -138,6 +156,8 @@ namespace svm::core {
 					PrintConstant<IntObject>(stream, constantPool, defIndent, indentOnce, i);
 				} else if (type == &ConstantPool::GetLongCount) {
 					PrintConstant<LongObject>(stream, constantPool, defIndent, indentOnce, i);
+				} else if (type == &ConstantPool::GetSingleCount) {
+					PrintConstant<SingleObject>(stream, constantPool, defIndent, indentOnce, i);
 				} else if (type == &ConstantPool::GetDoubleCount) {
 					PrintConstant<DoubleObject>(stream, constantPool, defIndent, indentOnce, i);
 				}
