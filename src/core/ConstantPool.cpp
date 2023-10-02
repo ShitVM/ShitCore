@@ -25,6 +25,7 @@ namespace svm::core {
 		assert(index < GetAllCount());
 
 		if (index >= GetDoubleOffset()) return DoubleType;
+		else if (index >= GetSingleOffset()) return SingleType;
 		else if (index >= GetLongOffset()) return LongType;
 		else return IntType;
 	}
