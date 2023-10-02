@@ -10,7 +10,7 @@ namespace svm {
 		v0_4_0,
 		v0_5_0,
 
-		Least = v0_4_0,
+		Least = v0_5_0,
 		Latest = v0_5_0,
 	};
 
@@ -21,7 +21,7 @@ namespace svm {
 		v0_4_0,
 		v0_5_0,
 
-		Least = v0_4_0,
+		Least = v0_5_0,
 		Latest = v0_5_0,
 	};
 }

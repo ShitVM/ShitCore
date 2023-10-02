@@ -22,11 +22,11 @@ namespace svm::core {
 		ConstantPool() noexcept = default;
 		ConstantPool(std::vector<IntObject> intPool, std::vector<LongObject> longPool,
 			std::vector<SingleObject> singlePool, std::vector<DoubleObject> doublePool) noexcept;
-		ConstantPool(ConstantPool&& constantPool) noexcept = default;
+		ConstantPool(ConstantPool&& other) noexcept = default;
 		~ConstantPool() = default;
 
 	public:
-		ConstantPool& operator=(ConstantPool&& constantPool) noexcept = default;
+		ConstantPool& operator=(ConstantPool&& other) noexcept = default;
 		bool operator==(const ConstantPool&) const = delete;
 		bool operator!=(const ConstantPool&) const = delete;
 

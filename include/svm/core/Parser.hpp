@@ -23,13 +23,13 @@ namespace svm::core {
 
 	public:
 		Parser() noexcept = default;
-		Parser(Parser&& parser) noexcept = default;
+		Parser(Parser&& other) noexcept = default;
 		~Parser() = default;
 
 	public:
-		Parser& operator=(Parser&& parser) noexcept = default;
-		bool operator==(const Parser&) = delete;
-		bool operator!=(const Parser&) = delete;
+		Parser& operator=(Parser&& other) noexcept = default;
+		bool operator==(const Parser&) const = delete;
+		bool operator!=(const Parser&) const = delete;
 
 	public:
 		void Clear() noexcept;
@@ -52,7 +52,7 @@ namespace svm::core {
 		void ParseMappings(std::vector<T>& mappings) noexcept;
 		void ParseConstantPool();
 		template<typename T>
-		void ParseConstants(std::vector<T>& pool) noexcept;
+		void ParseConstants(std::vector<T>& constantPool) noexcept;
 		void ParseStructures();
 		void ParseFunctions();
 		Instructions ParseInstructions();

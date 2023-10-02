@@ -40,13 +40,13 @@ namespace svm {
 	protected:
 		Object() noexcept = default;
 		explicit Object(Type type) noexcept;
-		Object(const Object& object) noexcept = default;
+		Object(const Object& other) noexcept = default;
 
 	public:
 		~Object() = default;
 
 	protected:
-		Object& operator=(const Object& object) noexcept = default;
+		Object& operator=(const Object& other) noexcept = default;
 
 	public:
 		bool operator==(const Object&) const = delete;
@@ -66,11 +66,11 @@ namespace svm {
 	public:
 		IntObject() noexcept;
 		IntObject(RawIntObject rawObject) noexcept;
-		IntObject(const IntObject& object) noexcept = default;
+		IntObject(const IntObject& other) noexcept = default;
 		~IntObject() = default;
 
 	public:
-		IntObject& operator=(const IntObject& object) noexcept = default;
+		IntObject& operator=(const IntObject& other) noexcept = default;
 
 	public:
 		template<typename T>
@@ -84,11 +84,11 @@ namespace svm {
 	public:
 		LongObject() noexcept;
 		LongObject(RawLongObject rawObject) noexcept;
-		LongObject(const LongObject& object) noexcept = default;
+		LongObject(const LongObject& other) noexcept = default;
 		~LongObject() = default;
 
 	public:
-		LongObject& operator=(const LongObject& object) noexcept = default;
+		LongObject& operator=(const LongObject& other) noexcept = default;
 
 	public:
 		template<typename T>
@@ -102,11 +102,11 @@ namespace svm {
 	public:
 		SingleObject() noexcept;
 		SingleObject(RawSingleObject rawObject) noexcept;
-		SingleObject(const SingleObject& object) noexcept = default;
+		SingleObject(const SingleObject& other) noexcept = default;
 		~SingleObject() = default;
 
 	public:
-		SingleObject& operator=(const SingleObject& object) noexcept = default;
+		SingleObject& operator=(const SingleObject& other) noexcept = default;
 
 	public:
 		template<typename T>
@@ -120,11 +120,11 @@ namespace svm {
 	public:
 		DoubleObject() noexcept;
 		DoubleObject(RawDoubleObject rawObject) noexcept;
-		DoubleObject(const DoubleObject& object) noexcept = default;
+		DoubleObject(const DoubleObject& other) noexcept = default;
 		~DoubleObject() = default;
 
 	public:
-		DoubleObject& operator=(const DoubleObject& object) noexcept = default;
+		DoubleObject& operator=(const DoubleObject& other) noexcept = default;
 
 	public:
 		template<typename T>
@@ -138,11 +138,11 @@ namespace svm {
 	public:
 		PointerObject() noexcept;
 		PointerObject(RawPointerObject rawObject) noexcept;
-		PointerObject(const PointerObject& object) noexcept = default;
+		PointerObject(const PointerObject& other) noexcept = default;
 		~PointerObject() = default;
 
 	public:
-		PointerObject& operator=(const PointerObject& object) noexcept = default;
+		PointerObject& operator=(const PointerObject& other) noexcept = default;
 
 	public:
 		template<typename T>
@@ -156,11 +156,11 @@ namespace svm {
 	public:
 		GCPointerObject() noexcept;
 		GCPointerObject(RawGCPointerObject rawObject) noexcept;
-		GCPointerObject(const GCPointerObject& object) noexcept = default;
+		GCPointerObject(const GCPointerObject& other) noexcept = default;
 		~GCPointerObject() = default;
 
 	public:
-		GCPointerObject& operator=(const GCPointerObject& object) noexcept = default;
+		GCPointerObject& operator=(const GCPointerObject& other) noexcept = default;
 	};
 
 	class ArrayObject final : public Object {
