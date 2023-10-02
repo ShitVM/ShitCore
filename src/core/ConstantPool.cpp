@@ -11,6 +11,7 @@
 namespace svm::core {
 	ConstantPool::ConstantPool(std::vector<IntObject> intPool, std::vector<LongObject> longPool,
 		std::vector<SingleObject> singlePool, std::vector<DoubleObject> doublePool) noexcept
+
 		: m_IntPool(std::move(intPool)), m_LongPool(std::move(longPool)),
 		m_SinglePool(std::move(singlePool)), m_DoublePool(std::move(doublePool)) {}
 
@@ -24,10 +25,14 @@ namespace svm::core {
 	Type ConstantPool::GetConstantType(std::uint32_t index) const noexcept {
 		assert(index < GetAllCount());
 
-		if (index >= GetDoubleOffset()) return DoubleType;
-		else if (index >= GetSingleOffset()) return SingleType;
-		else if (index >= GetLongOffset()) return LongType;
-		else return IntType;
+		if (index >= GetDoubleOffset())
+			return DoubleType;
+		else if (index >= GetSingleOffset())
+			return SingleType;
+		else if (index >= GetLongOffset())
+			return LongType;
+		else
+			return IntType;
 	}
 	std::uint32_t ConstantPool::GetIntOffset() const noexcept {
 		return 0;
@@ -58,80 +63,101 @@ namespace svm::core {
 	}
 
 	std::uint32_t ConstantPool::AddIntConstant(std::uint32_t value) {
-		m_IntPool.push_back(value);
+		m_IntPool.emplace_back(RawIntObject{ value });
+
 		return GetIntCount() - 1;
 	}
 	std::uint32_t ConstantPool::AddLongConstant(std::uint64_t value) {
-		m_LongPool.push_back(value);
+		m_LongPool.emplace_back(RawLongObject{ value });
+
 		return GetLongCount() - 1;
 	}
 	std::uint32_t ConstantPool::AddSingleConstant(float value) {
-		m_SinglePool.push_back(value);
+		m_SinglePool.emplace_back(RawSingleObject{ value });
+
 		return GetSingleCount() - 1;
 	}
 	std::uint32_t ConstantPool::AddDoubleConstant(double value) {
-		m_DoublePool.push_back(value);
+		m_DoublePool.emplace_back(RawDoubleObject{ value });
+
 		return GetDoubleCount() - 1;
 	}
 	std::uint32_t ConstantPool::FindIntConstant(std::uint32_t value) const noexcept {
-		const auto iter = std::find_if(m_IntPool.begin(), m_IntPool.end(), [value](const auto& object) {
-			return object.Value == value;
-		});
-		if (iter == m_IntPool.end()) return NPos;
-		else return static_cast<std::uint32_t>(std::distance(m_IntPool.begin(), iter));
+		if (const auto iter = std::find_if(m_IntPool.begin(), m_IntPool.end(),
+			[value](const auto& object) {
+				return object.RawObject.Value == value;
+			}); iter != m_IntPool.end()) {
+
+			return static_cast<std::uint32_t>(std::distance(m_IntPool.begin(), iter));
+		} else {
+			return NPos;
+		}
 	}
 	std::uint32_t ConstantPool::FindLongConstant(std::uint64_t value) const noexcept {
-		const auto iter = std::find_if(m_LongPool.begin(), m_LongPool.end(), [value](const auto& object) {
-			return object.Value == value;
-		});
-		if (iter == m_LongPool.end()) return NPos;
-		else return static_cast<std::uint32_t>(std::distance(m_LongPool.begin(), iter));
+		if (const auto iter = std::find_if(m_LongPool.begin(), m_LongPool.end(),
+			[value](const auto& object) {
+				return object.RawObject.Value == value;
+			}); iter != m_LongPool.end()) {
+
+			return static_cast<std::uint32_t>(std::distance(m_LongPool.begin(), iter));
+		} else {
+			return NPos;
+		}
 	}
 	std::uint32_t ConstantPool::FindSingleConstant(float value) const noexcept {
-		const auto iter = std::find_if(m_SinglePool.begin(), m_SinglePool.end(), [value](const auto& object) {
-			return object.Value == value;
-		});
-		if (iter == m_SinglePool.end()) return NPos;
-		else return static_cast<std::uint32_t>(std::distance(m_SinglePool.begin(), iter));
+		if (const auto iter = std::find_if(m_SinglePool.begin(), m_SinglePool.end(),
+			[value](const auto& object) {
+				return object.RawObject.Value == value;
+			}); iter != m_SinglePool.end()) {
+
+			return static_cast<std::uint32_t>(std::distance(m_SinglePool.begin(), iter));
+		} else {
+			return NPos;
+		}
 	}
 	std::uint32_t ConstantPool::FindDoubleConstant(double value) const noexcept {
-		const auto iter = std::find_if(m_DoublePool.begin(), m_DoublePool.end(), [value](const auto& object) {
-			return object.Value == value;
-		});
-		if (iter == m_DoublePool.end()) return NPos;
-		else return static_cast<std::uint32_t>(std::distance(m_DoublePool.begin(), iter));
+		if (const auto iter = std::find_if(m_DoublePool.begin(), m_DoublePool.end(),
+			[value](const auto& object) {
+				return object.RawObject.Value == value;
+			}); iter != m_DoublePool.end()) {
+
+			return static_cast<std::uint32_t>(std::distance(m_DoublePool.begin(), iter));
+		} else {
+			return NPos;
+		}
 	}
 
 	const std::vector<IntObject>& ConstantPool::GetIntPool() const noexcept {
 		return m_IntPool;
 	}
-	void ConstantPool::SetIntPool(std::vector<IntObject> newIntPool) noexcept {
-		m_IntPool = std::move(newIntPool);
-	}
 	const std::vector<LongObject>& ConstantPool::GetLongPool() const noexcept {
 		return m_LongPool;
-	}
-	void ConstantPool::SetLongPool(std::vector<LongObject> newLongPool) noexcept {
-		m_LongPool = std::move(newLongPool);
 	}
 	const std::vector<SingleObject>& ConstantPool::GetSinglePool() const noexcept {
 		return m_SinglePool;
 	}
-	void ConstantPool::SetSinglePool(std::vector<SingleObject> newSinglePool) noexcept {
-		m_SinglePool = std::move(newSinglePool);
-	}
 	const std::vector<DoubleObject>& ConstantPool::GetDoublePool() const noexcept {
 		return m_DoublePool;
 	}
-	void ConstantPool::GetDoublePool(std::vector<DoubleObject> newDoublePool) noexcept {
-		m_DoublePool = std::move(newDoublePool);
-	}
 
 	namespace {
-		template<typename T>
-		void PrintConstant(std::ostream& stream, const ConstantPool& constantPool, const std::string& defIndent, const std::string& indentOnce, std::uint32_t i) {
-			const auto& constant = constantPool.GetConstant<T>(i);
-			stream << '\n' << defIndent << indentOnce << '[' << i << "]: " << constant.GetType()->Name << '(' << constant.Value << ')';
+		template<typename T, typename... Ts>
+		void PrintConstants(std::ostream& stream, const ConstantPool& constantPool,
+			const std::string& defIndent, const std::string& indentOnce, std::uint32_t& i) {
+
+			const auto count = constantPool.GetCount<T>();
+			const auto end = count + i;
+
+			while (i < end) {
+				const auto& constant = constantPool.GetConstant<T>(i);
+
+				stream << '\n' << defIndent << indentOnce <<
+					'[' << i++ << "]: " << constant.GetType()->Name << '(' << constant.RawObject.Value << ')';
+			}
+
+			if constexpr (sizeof...(Ts) > 0) {
+				PrintConstants<Ts...>(stream, constantPool, defIndent, indentOnce, i);
+			}
 		}
 	}
 
@@ -141,29 +167,14 @@ namespace svm::core {
 
 		stream << defIndent << "ConstantPool: " << constantPool.GetAllCount();
 
-		static constexpr std::uint32_t((ConstantPool::*types[])() const noexcept) = {
-			&ConstantPool::GetIntCount,
-			&ConstantPool::GetLongCount,
-			&ConstantPool::GetSingleCount,
-			&ConstantPool::GetDoubleCount,
-		};
-
 		std::uint32_t i = 0;
-		for (auto type : types) {
-			const std::uint32_t count = (constantPool.*type)();
-			const std::uint32_t end = i + count;
-			for (; i < end; ++i) {
-				if (type == &ConstantPool::GetIntCount) {
-					PrintConstant<IntObject>(stream, constantPool, defIndent, indentOnce, i);
-				} else if (type == &ConstantPool::GetLongCount) {
-					PrintConstant<LongObject>(stream, constantPool, defIndent, indentOnce, i);
-				} else if (type == &ConstantPool::GetSingleCount) {
-					PrintConstant<SingleObject>(stream, constantPool, defIndent, indentOnce, i);
-				} else if (type == &ConstantPool::GetDoubleCount) {
-					PrintConstant<DoubleObject>(stream, constantPool, defIndent, indentOnce, i);
-				}
-			}
-		}
+
+		PrintConstants<
+			IntObject,
+			LongObject,
+			SingleObject,
+			DoubleObject
+		>(stream, constantPool, defIndent, indentOnce, i);
 
 		return stream;
 	}

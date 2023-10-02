@@ -27,8 +27,8 @@ namespace svm::core {
 
 	public:
 		ConstantPool& operator=(ConstantPool&& constantPool) noexcept = default;
-		bool operator==(const ConstantPool&) = delete;
-		bool operator!=(const ConstantPool&) = delete;
+		bool operator==(const ConstantPool&) const = delete;
+		bool operator!=(const ConstantPool&) const = delete;
 
 	public:
 		void Clear() noexcept;
@@ -60,13 +60,9 @@ namespace svm::core {
 		std::uint32_t FindDoubleConstant(double value) const noexcept;
 
 		const std::vector<IntObject>& GetIntPool() const noexcept;
-		void SetIntPool(std::vector<IntObject> newIntPool) noexcept;
 		const std::vector<LongObject>& GetLongPool() const noexcept;
-		void SetLongPool(std::vector<LongObject> newLongPool) noexcept;
 		const std::vector<SingleObject>& GetSinglePool() const noexcept;
-		void SetSinglePool(std::vector<SingleObject> newSinglePool) noexcept;
 		const std::vector<DoubleObject>& GetDoublePool() const noexcept;
-		void GetDoublePool(std::vector<DoubleObject> newDoublePool) noexcept;
 	};
 
 	std::ostream& operator<<(std::ostream& stream, const ConstantPool& constantPool);
