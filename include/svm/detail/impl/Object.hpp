@@ -1,117 +1,86 @@
 #pragma once
-#include <svm/Object.hpp>
+#include "../../Object.hpp"
 
 namespace svm {
 	template<>
-	inline IntObject IntObject::Cast<IntObject>() const noexcept {
-		return *this;
-	}
-	template<>
 	inline LongObject IntObject::Cast<LongObject>() const noexcept {
-		return Value;
+		return RawLongObject{ RawObject.Value };
 	}
 	template<>
 	inline SingleObject IntObject::Cast<SingleObject>() const noexcept {
-		return static_cast<float>(Value);
+		return RawSingleObject{ static_cast<float>(RawObject.Value) };
 	}
 	template<>
 	inline DoubleObject IntObject::Cast<DoubleObject>() const noexcept {
-		return static_cast<double>(Value);
-	}
-	template<>
-	inline PointerObject IntObject::Cast<PointerObject>() const noexcept {
-		return reinterpret_cast<void*>(static_cast<std::uintptr_t>(Value));
+		return RawDoubleObject{ static_cast<double>(RawObject.Value) };
 	}
 }
 
 namespace svm {
 	template<>
 	inline IntObject LongObject::Cast<IntObject>() const noexcept {
-		return static_cast<std::uint32_t>(Value);
-	}
-	template<>
-	inline LongObject LongObject::Cast<LongObject>() const noexcept {
-		return *this;
+		return RawIntObject{ static_cast<std::uint32_t>(RawObject.Value) };
 	}
 	template<>
 	inline SingleObject LongObject::Cast<SingleObject>() const noexcept {
-		return static_cast<float>(Value);
+		return RawSingleObject{ static_cast<float>(RawObject.Value) };
 	}
 	template<>
 	inline DoubleObject LongObject::Cast<DoubleObject>() const noexcept {
-		return static_cast<double>(Value);
-	}
-	template<>
-	inline PointerObject LongObject::Cast<PointerObject>() const noexcept {
-		return reinterpret_cast<void*>(static_cast<std::uintptr_t>(Value));
+		return RawDoubleObject{ static_cast<double>(RawObject.Value) };
 	}
 }
 
 namespace svm {
 	template<>
 	inline IntObject SingleObject::Cast<IntObject>() const noexcept {
-		return static_cast<std::uint32_t>(Value);
+		return RawIntObject{ static_cast<std::uint32_t>(RawObject.Value) };
+
 	}
 	template<>
 	inline LongObject SingleObject::Cast<LongObject>() const noexcept {
-		return static_cast<std::uint64_t>(Value);
-	}
-	template<>
-	inline SingleObject SingleObject::Cast<SingleObject>() const noexcept {
-		return *this;
+		return RawLongObject{ static_cast<std::uint64_t>(RawObject.Value) };
 	}
 	template<>
 	inline DoubleObject SingleObject::Cast<DoubleObject>() const noexcept {
-		return Value;
-	}
-	template<>
-	inline PointerObject SingleObject::Cast<PointerObject>() const noexcept {
-		return reinterpret_cast<void*>(static_cast<std::uintptr_t>(Value));
+		return RawDoubleObject{ RawObject.Value };
 	}
 }
 
 namespace svm {
 	template<>
 	inline IntObject DoubleObject::Cast<IntObject>() const noexcept {
-		return static_cast<std::uint32_t>(Value);
+		return RawIntObject{ static_cast<std::uint32_t>(RawObject.Value) };
 	}
 	template<>
 	inline LongObject DoubleObject::Cast<LongObject>() const noexcept {
-		return static_cast<std::uint64_t>(Value);
+		return RawLongObject{ static_cast<std::uint64_t>(RawObject.Value) };
 	}
 	template<>
 	inline SingleObject DoubleObject::Cast<SingleObject>() const noexcept {
-		return static_cast<float>(Value);
-	}
-	template<>
-	inline DoubleObject DoubleObject::Cast<DoubleObject>() const noexcept {
-		return *this;
-	}
-	template<>
-	inline PointerObject DoubleObject::Cast<PointerObject>() const noexcept {
-		return reinterpret_cast<void*>(static_cast<std::uintptr_t>(Value));
+		return RawSingleObject{ static_cast<float>(RawObject.Value) };
 	}
 }
 
 namespace svm {
 	template<>
 	inline IntObject PointerObject::Cast<IntObject>() const noexcept {
-		return static_cast<std::uint32_t>(reinterpret_cast<std::uintptr_t>(Value));
+		return RawIntObject{ static_cast<std::uint32_t>(
+			reinterpret_cast<std::uintptr_t>(RawObject.Address)) };
 	}
 	template<>
 	inline LongObject PointerObject::Cast<LongObject>() const noexcept {
-		return static_cast<std::uint64_t>(reinterpret_cast<std::uintptr_t>(Value));
+		return RawLongObject{ static_cast<std::uint64_t>(
+			reinterpret_cast<std::uintptr_t>(RawObject.Address)) };
 	}
 	template<>
 	inline SingleObject PointerObject::Cast<SingleObject>() const noexcept {
-		return static_cast<float>(reinterpret_cast<std::uintptr_t>(Value));
+		return RawSingleObject{ static_cast<float>(
+			reinterpret_cast<std::uintptr_t>(RawObject.Address)) };
 	}
 	template<>
 	inline DoubleObject PointerObject::Cast<DoubleObject>() const noexcept {
-		return static_cast<double>(reinterpret_cast<std::uintptr_t>(Value));
-	}
-	template<>
-	inline PointerObject PointerObject::Cast<PointerObject>() const noexcept {
-		return *this;
+		return RawDoubleObject{ static_cast<double>(
+			reinterpret_cast<std::uintptr_t>(RawObject.Address)) };
 	}
 }
