@@ -2,6 +2,7 @@
 
 #include <svm/Type.hpp>
 
+#include <algorithm>
 #include <cstddef>
 #include <cstdint>
 
@@ -33,7 +34,16 @@ namespace svm {
 }
 
 namespace svm {
-	class Object {
+	static inline constexpr std::size_t ObjectAlignment = std::max({
+		alignof(RawIntObject),
+		alignof(RawLongObject),
+		alignof(RawSingleObject),
+		alignof(RawDoubleObject),
+		alignof(RawPointerObject),
+		alignof(RawGCPointerObject)
+	});
+
+	class alignas(ObjectAlignment) Object {
 	private:
 		Type m_Type;
 
@@ -50,7 +60,6 @@ namespace svm {
 
 	public:
 		bool operator==(const Object&) const = delete;
-		bool operator!=(const Object&) const = delete;
 
 	public:
 		Type GetType() const noexcept;

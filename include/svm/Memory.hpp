@@ -25,8 +25,7 @@ namespace svm {
 	template<typename T>
 	T CreateObjectFromBytes(const std::uint8_t* begin) noexcept;
 
-	template<typename T>
-	std::size_t Pade(std::size_t dataSize) noexcept;
+	std::size_t CalcNearestMultiplier(std::size_t value, std::size_t divider) noexcept;
 }
 
 #include "detail/impl/Memory.hpp"

@@ -29,7 +29,6 @@ namespace svm::core {
 	public:
 		Parser& operator=(Parser&& other) noexcept = default;
 		bool operator==(const Parser&) const = delete;
-		bool operator!=(const Parser&) const = delete;
 
 	public:
 		void Clear() noexcept;

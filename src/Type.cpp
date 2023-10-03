@@ -7,18 +7,12 @@
 namespace svm {
 	TypeInfo::TypeInfo(std::string name, TypeCode code) noexcept
 		: Name(std::move(name)), Code(code) {}
-	TypeInfo::TypeInfo(std::string name, TypeCode code, std::size_t size) noexcept
-		: Name(std::move(name)), Code(code), Size(size) {}
-	TypeInfo::TypeInfo(TypeInfo&& typeInfo) noexcept
-		: Name(std::move(typeInfo.Name)), Module(typeInfo.Module), Code(typeInfo.Code), Size(typeInfo.Size) {}
+	TypeInfo::TypeInfo(
+		std::string name, TypeCode code,
+		std::size_t size, std::size_t rawSize, std::size_t rawAlignment) noexcept
 
-	TypeInfo& TypeInfo::operator=(TypeInfo&& typeInfo) noexcept {
-		Name = std::move(typeInfo.Name);
-		Module = typeInfo.Module;
-		Code = typeInfo.Code;
-		Size = typeInfo.Size;
-		return *this;
-	}
+		: Name(std::move(name)), Code(code),
+		Size(size), RawSize(rawSize), RawAlignment(rawAlignment) {}
 }
 
 namespace svm {
@@ -41,14 +35,36 @@ namespace svm {
 	}
 
 	namespace {
-		static const TypeInfo s_NoneType("none", TypeCode::None, 0);
-		static const TypeInfo s_IntType("int", TypeCode::Int, sizeof(IntObject));
-		static const TypeInfo s_LongType("long", TypeCode::Long, sizeof(LongObject));
-		static const TypeInfo s_SingleType("single", TypeCode::Single, sizeof(SingleObject));
-		static const TypeInfo s_DoubleType("double", TypeCode::Double, sizeof(DoubleObject));
-		static const TypeInfo s_PointerType("pointer", TypeCode::Pointer, sizeof(PointerObject));
-		static const TypeInfo s_GCPointerType("gcpointer", TypeCode::GCPointer, sizeof(GCPointerObject));
-		static const TypeInfo s_ArrayType("array", TypeCode::Array, sizeof(ArrayObject));
+		static const TypeInfo s_NoneType(
+			"none", TypeCode::None
+		);
+		static const TypeInfo s_IntType(
+			"int", TypeCode::Int,
+			sizeof(IntObject), sizeof(RawIntObject), alignof(RawIntObject)
+		);
+		static const TypeInfo s_LongType(
+			"long", TypeCode::Long,
+			sizeof(LongObject), sizeof(RawLongObject), alignof(RawLongObject)
+		);
+		static const TypeInfo s_SingleType(
+			"single", TypeCode::Single,
+			sizeof(SingleObject), sizeof(RawSingleObject), alignof(RawSingleObject)
+		);
+		static const TypeInfo s_DoubleType(
+			"double", TypeCode::Double,
+			sizeof(DoubleObject), sizeof(RawDoubleObject), alignof(RawDoubleObject)
+		);
+		static const TypeInfo s_PointerType(
+			"pointer", TypeCode::Pointer,
+			sizeof(PointerObject), sizeof(RawPointerObject), alignof(RawPointerObject)
+		);
+		static const TypeInfo s_GCPointerType(
+			"gcpointer", TypeCode::GCPointer,
+			sizeof(GCPointerObject), sizeof(RawGCPointerObject), alignof(RawGCPointerObject)
+		);
+		static const TypeInfo s_ArrayType(
+			"array", TypeCode::Array
+		);
 	}
 
 	const Type NoneType = s_NoneType;

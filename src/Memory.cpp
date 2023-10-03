@@ -12,3 +12,15 @@ namespace svm {
 	}
 #endif
 }
+
+namespace svm {
+	std::size_t CalcNearestMultiplier(std::size_t value, std::size_t divider) noexcept {
+		const auto q = value / divider;
+		const auto r = value % divider;
+
+		if (r == 0)
+			return value;
+		else
+			return (q + 1) * divider;
+	}
+}

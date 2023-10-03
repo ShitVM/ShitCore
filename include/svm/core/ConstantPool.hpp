@@ -28,7 +28,6 @@ namespace svm::core {
 	public:
 		ConstantPool& operator=(ConstantPool&& other) noexcept = default;
 		bool operator==(const ConstantPool&) const = delete;
-		bool operator!=(const ConstantPool&) const = delete;
 
 	public:
 		void Clear() noexcept;

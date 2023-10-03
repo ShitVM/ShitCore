@@ -27,19 +27,23 @@ namespace svm {
 		std::string Name;
 		std::uint32_t Module = 0;
 		TypeCode Code = TypeCode::None;
+
 		std::size_t Size = 0;
+		std::size_t RawSize = 0;
+		std::size_t RawAlignment = 0;
 
 	public:
 		TypeInfo() noexcept = default;
 		TypeInfo(std::string name, TypeCode code) noexcept;
-		TypeInfo(std::string name, TypeCode code, std::size_t size) noexcept;
-		TypeInfo(TypeInfo&& typeInfo) noexcept;
+		TypeInfo(
+			std::string name, TypeCode code,
+			std::size_t size, std::size_t rawSize, std::size_t rawAlignment) noexcept;
+		TypeInfo(TypeInfo&& other) = default;
 		~TypeInfo() = default;
 
 	public:
-		TypeInfo& operator=(TypeInfo&& typeInfo) noexcept;
-		bool operator==(const TypeInfo&) = delete;
-		bool operator!=(const TypeInfo&) = delete;
+		TypeInfo& operator=(TypeInfo&& typeInfo) noexcept = default;
+		bool operator==(const TypeInfo&) const = delete;
 	};
 }
 

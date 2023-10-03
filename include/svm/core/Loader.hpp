@@ -3,7 +3,6 @@
 #include <svm/core/Module.hpp>
 #include <svm/core/virtual/VirtualModule.hpp>
 
-#include <cstddef>
 #include <cstdint>
 #include <filesystem>
 #include <string>
@@ -19,13 +18,12 @@ namespace svm::core {
 
 	public:
 		Loader() noexcept = default;
-		Loader(Loader&& loader) noexcept;
+		Loader(Loader&& other) noexcept = default;
 		~Loader() = default;
 
 	public:
-		Loader& operator=(Loader&& loader) noexcept;
-		bool operator==(const Loader&) = delete;
-		bool operator!=(const Loader&) = delete;
+		Loader& operator=(Loader&& other) noexcept = default;
+		bool operator==(const Loader&) const = delete;
 
 	public:
 		void Clear() noexcept;
@@ -50,11 +48,13 @@ namespace svm::core {
 		void LoadDependencies(ModuleInfo<FI>* module);
 
 		void FindCycle(ModuleInfo<FI>* module) const;
-		bool FindCycle(std::unordered_map<void*, std::unordered_map<std::uint32_t, int>>& visited,
-			ModuleInfo<FI>* module, std::uint32_t node) const;
-		void CalcSize(ModuleInfo<FI>* module);
-		std::size_t CalcSize(ModuleInfo<FI>* module, std::uint32_t node);
-		void CalcOffset(ModuleInfo<FI>* module);
+		bool FindCycle(
+			std::unordered_map<
+				void*,
+				std::unordered_map<std::uint32_t, int>
+			>& visited, ModuleInfo<FI>* module, std::uint32_t node) const;
+		void UpdateTypeInfo(ModuleInfo<FI>* module);
+		void UpdateTypeInfo(ModuleInfo<FI>* module, std::uint32_t node);
 
 		ModuleInfo<FI>* GetModuleInternal(const ModulePath& path) const noexcept;
 	};
