@@ -235,7 +235,7 @@ namespace svm::core {
 			const Type type = field.Type;
 
 			if (type.IsStructure()) {
-				CalcSize(
+				UpdateTypeInfo(
 					m_Modules[type->Module].get(),
 					static_cast<std::uint32_t>(type->Code) - static_cast<std::uint32_t>(TypeCode::Structure));
 			}
@@ -245,8 +245,8 @@ namespace svm::core {
 			}
 
 			field.Offset = CalcNearestMultiplier(offset, type->RawAlignment);
-			offset = field.Offset +
-				static_cast<std::size_t>(type->RawSize * std::max(1, field.Count));
+			offset = field.Offset + static_cast<std::size_t>(
+				type->RawSize * std::max(static_cast<std::uint64_t>(1), field.Count));
 		}
 
 		structure.Type.RawSize = offset;

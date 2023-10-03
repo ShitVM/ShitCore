@@ -24,22 +24,30 @@ namespace svm {
 		: Object(IntType) {}
 	IntObject::IntObject(RawIntObject rawObject) noexcept
 		: Object(IntType), RawObject(rawObject) {}
+}
 
+namespace svm {
 	LongObject::LongObject() noexcept
 		: Object(LongType) {}
 	LongObject::LongObject(RawLongObject rawObject) noexcept
 		: Object(LongType), RawObject(rawObject) {}
+}
 
+namespace svm {
 	SingleObject::SingleObject() noexcept
 		: Object(SingleType) {}
 	SingleObject::SingleObject(RawSingleObject rawObject) noexcept
 		: Object(SingleType), RawObject(rawObject) {}
+}
 
+namespace svm {
 	DoubleObject::DoubleObject() noexcept
 		: Object(DoubleType) {}
 	DoubleObject::DoubleObject(RawDoubleObject rawObject) noexcept
 		: Object(DoubleType), RawObject(rawObject) {}
+}
 
+namespace svm {
 	PointerObject::PointerObject() noexcept
 		: Object(PointerType) {}
 	PointerObject::PointerObject(RawPointerObject rawObject) noexcept
@@ -47,18 +55,24 @@ namespace svm {
 
 		assert(RawObject.Type != nullptr || RawObject.Address == nullptr);
 	}
+}
 
+namespace svm {
 	GCPointerObject::GCPointerObject() noexcept
 		: Object(GCPointerType) {}
 	GCPointerObject::GCPointerObject(RawGCPointerObject rawObject) noexcept
 		: Object(GCPointerType), RawObject(rawObject) {}
+}
 
+namespace svm {
 	ArrayObject::ArrayObject(std::size_t count) noexcept
 		: Object(ArrayType), Count(count) {
 
 		assert(Count > 0);
 	}
+}
 
+namespace svm {
 	StructureObject::StructureObject(Type type) noexcept
 		: Object(type) {
 
