@@ -92,7 +92,7 @@ namespace svm {
 		false/*add*/, false/*sub*/, false/*mul*/, false/*imul*/, false/*div*/, false/*idiv*/, false/*mod*/, false/*imod*/, false/*neg*/, false/*inc*/, false/*dec*/,
 		false/*and*/, false/*or*/, false/*xor*/, false/*not*/, false/*shl*/, false/*shr*/, false/*sal*/, false/*sar*/,
 		false/*cmp*/, false/*icmp*/, true/*jmp*/, true/*je*/, true/*jne*/, true/*ja*/, true/*jae*/, true/*jb*/, true/*jbe*/, true/*call*/, false/*ret*/,
-		false/*tob*/, false/*tosh*/, false/*toi*/, false/*tol*/, false/*tosi*/, false/*tod*/, false/*top*/,
+		false/*tob*/, false/*tosh*/, false/*toi*/, false/*tol*/, false/*tosi*/, false/*tod*/, true/*top*/,
 		false/*null*/, true/*new*/, false/*delete*/, false/*gcnull*/, true/*gcnew*/,
 		true/*apush*/, true/*anew*/, true/*agcnew*/, false/*alea*/, false/*count*/,
 	};
