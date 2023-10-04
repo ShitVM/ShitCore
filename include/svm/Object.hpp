@@ -174,6 +174,7 @@ namespace svm {
 
 	class ArrayObject final : public Object {
 	public:
+		Type ElementType;
 		std::size_t Count = 0;
 
 	public:
