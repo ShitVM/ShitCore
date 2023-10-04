@@ -24,7 +24,8 @@ namespace svm {
 	};
 
 	struct RawPointerObject final {
-		svm::Type Type = nullptr;
+		svm::Type Type;
+		std::size_t Count = 0;
 		void* Address = nullptr;
 	};
 
