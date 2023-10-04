@@ -69,6 +69,8 @@ namespace svm {
 }
 
 namespace svm {
+	class PointerObject;
+
 	class IntObject final : public Object {
 	public:
 		RawIntObject RawObject;
@@ -85,6 +87,7 @@ namespace svm {
 	public:
 		template<typename T>
 		inline T Cast() const noexcept;
+		PointerObject CastToPointer(Type targetType, std::size_t count) const noexcept;
 	};
 
 	class LongObject final : public Object {
@@ -103,6 +106,7 @@ namespace svm {
 	public:
 		template<typename T>
 		inline T Cast() const noexcept;
+		PointerObject CastToPointer(Type targetType, std::size_t count) const noexcept;
 	};
 
 	class SingleObject final : public Object {
@@ -121,6 +125,7 @@ namespace svm {
 	public:
 		template<typename T>
 		inline T Cast() const noexcept;
+		PointerObject CastToPointer(Type targetType, std::size_t count) const noexcept;
 	};
 
 	class DoubleObject final : public Object {
@@ -139,6 +144,7 @@ namespace svm {
 	public:
 		template<typename T>
 		inline T Cast() const noexcept;
+		PointerObject CastToPointer(Type targetType, std::size_t count) const noexcept;
 	};
 
 	class PointerObject final : public Object {
@@ -157,6 +163,7 @@ namespace svm {
 	public:
 		template<typename T>
 		inline T Cast() const noexcept;
+		PointerObject CastToPointer(Type targetType, std::size_t count) const noexcept;
 	};
 
 	class GCPointerObject final : public Object {

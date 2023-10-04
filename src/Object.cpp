@@ -24,6 +24,12 @@ namespace svm {
 		: Object(IntType) {}
 	IntObject::IntObject(RawIntObject rawObject) noexcept
 		: Object(IntType), RawObject(rawObject) {}
+
+	PointerObject IntObject::CastToPointer(Type targetType, std::size_t count) const noexcept {
+		assert(targetType != nullptr);
+
+		return RawPointerObject{ targetType, count, reinterpret_cast<void*>(RawObject.Value) };
+	}
 }
 
 namespace svm {
@@ -31,6 +37,12 @@ namespace svm {
 		: Object(LongType) {}
 	LongObject::LongObject(RawLongObject rawObject) noexcept
 		: Object(LongType), RawObject(rawObject) {}
+
+	PointerObject LongObject::CastToPointer(Type targetType, std::size_t count) const noexcept {
+		assert(targetType != nullptr);
+
+		return RawPointerObject{ targetType, count, reinterpret_cast<void*>(RawObject.Value) };
+	}
 }
 
 namespace svm {
@@ -38,6 +50,13 @@ namespace svm {
 		: Object(SingleType) {}
 	SingleObject::SingleObject(RawSingleObject rawObject) noexcept
 		: Object(SingleType), RawObject(rawObject) {}
+
+	PointerObject SingleObject::CastToPointer(Type targetType, std::size_t count) const noexcept {
+		assert(targetType != nullptr);
+
+		return RawPointerObject{ targetType, count,
+			reinterpret_cast<void*>(static_cast<std::uintptr_t>(RawObject.Value)) };
+	}
 }
 
 namespace svm {
@@ -45,6 +64,13 @@ namespace svm {
 		: Object(DoubleType) {}
 	DoubleObject::DoubleObject(RawDoubleObject rawObject) noexcept
 		: Object(DoubleType), RawObject(rawObject) {}
+
+	PointerObject DoubleObject::CastToPointer(Type targetType, std::size_t count) const noexcept {
+		assert(targetType != nullptr);
+
+		return RawPointerObject{ targetType, count,
+			reinterpret_cast<void*>(static_cast<std::uintptr_t>(RawObject.Value)) };
+	}
 }
 
 namespace svm {
@@ -54,6 +80,12 @@ namespace svm {
 		: Object(PointerType), RawObject(rawObject) {
 
 		assert(RawObject.Type != nullptr || RawObject.Address == nullptr);
+	}
+
+	PointerObject PointerObject::CastToPointer(Type targetType, std::size_t count) const noexcept {
+		assert(targetType != nullptr);
+
+		return RawPointerObject{ targetType, count, RawObject.Address };
 	}
 }
 
